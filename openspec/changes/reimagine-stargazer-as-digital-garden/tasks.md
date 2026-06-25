@@ -154,5 +154,5 @@ The following items are intentionally **out of scope** for this change and track
 
 - [x] 14.1 **Standalone `/graph` page** — implemented in P11: new `graph` pageType, GraphPage component with Hero+Graph+Related+Recent layout, deep link support via `/graph?focus=<slug>`, node hierarchy by status (D39). Navigation label: "知识图谱".
 - [x] 14.2 **Dark mode toggle visual treatment** — CSS override in components.scss: brand-colored SVG fill (text-muted → accent-primary on hover), smooth transition.
-- [ ] 14.3 **Tag pages visual de-emphasis** — per design.md Q5 (Folder Primary, Tag Secondary), tag pages render today with the same chrome as content pages; revisit to express their secondary role.
+- [x] 14.3 **Tag pages visual de-emphasis** — CSS: reduced h3 font-size/weight in page-listing; tag pages already exclude reader-mode + right sidebar, achieve secondary role.
 - [ ] 14.4 **Notes encryption (`encrypted-pages` plugin UX)** — plugin is enabled but no encryption UX exists; design and implement password-gating flow.

@@ -74,6 +74,15 @@ const DrawerNav: QuartzComponent = ({ cfg, allFiles }: QuartzComponentProps) => 
   const brand = (cfg as any).brand ?? {}
   const brandName = brand.name ?? cfg.pageTitle
 
+  // Compute base path prefix from cfg.baseUrl for GitHub Pages (e.g. "/Stargazer")
+  const basePath: string = (() => {
+    try {
+      if (!(cfg as any).baseUrl) return ""
+      const url = new URL(`https://${(cfg as any).baseUrl}`)
+      return url.pathname.replace(/\/$/, "")
+    } catch { return "" }
+  })()
+
   return (
     <>
       <div class="drawer-scrim" data-drawer-scrim aria-hidden="true" />
@@ -111,7 +120,7 @@ const DrawerNav: QuartzComponent = ({ cfg, allFiles }: QuartzComponentProps) => 
             if (item.key === "knowledge" && item.expandable) {
               return (
                 <div key={item.key} class="drawer-item drawer-item-expandable" data-nav-key={item.key}>
-                  <a class="drawer-item-row" href={item.href}>
+                  <a class="drawer-item-row" href={basePath + item.href}>
                     <span class="drawer-item-label">{item.label}</span>
                     <span class="drawer-item-count">{hubs.length}</span>
                     <span class="drawer-item-chevron" aria-hidden="true">▾</span>
@@ -122,7 +131,7 @@ const DrawerNav: QuartzComponent = ({ cfg, allFiles }: QuartzComponentProps) => 
                         <li key={hub.href}>
                           <a
                             class="drawer-hub-row"
-                            href={hub.href}
+                            href={basePath + hub.href}
                             data-nav-key={hub.href}
                           >
                             <span class="drawer-hub-label">{hub.label}</span>
@@ -137,7 +146,7 @@ const DrawerNav: QuartzComponent = ({ cfg, allFiles }: QuartzComponentProps) => 
             }
             return (
               <div key={item.key} class="drawer-item" data-nav-key={item.key}>
-                <a class="drawer-item-row" href={item.href}>
+                <a class="drawer-item-row" href={basePath + item.href}>
                   <span class="drawer-item-label">{item.label}</span>
                 </a>
               </div>

@@ -30,6 +30,15 @@ const BrandHeader: QuartzComponent = ({ cfg, fileData }: QuartzComponentProps) =
   const logo = brand.logo ?? "✦"
   const homeHref = resolveRelative(fileData.slug as FullSlug, "index" as FullSlug)
 
+  // Compute base path prefix from cfg.baseUrl for GitHub Pages (e.g. "/Stargazer")
+  const basePath: string = (() => {
+    try {
+      if (!(cfg as any).baseUrl) return ""
+      const url = new URL(`https://${(cfg as any).baseUrl}`)
+      return url.pathname.replace(/\/$/, "")
+    } catch { return "" }
+  })()
+
   return (
     <header class="brand-header">
       <div class="brand-header-left">
@@ -52,7 +61,7 @@ const BrandHeader: QuartzComponent = ({ cfg, fileData }: QuartzComponentProps) =
 
       <nav class="brand-header-nav" aria-label="主要导航">
         {NAV_ITEMS.map((item) => (
-          <a key={item.key} class="brand-header-nav-link" href={item.href}>
+          <a key={item.key} class="brand-header-nav-link" href={basePath + item.href}>
             {item.label}
           </a>
         ))}
