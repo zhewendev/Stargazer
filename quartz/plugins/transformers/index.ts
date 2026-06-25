@@ -1,1 +1,1 @@
-export {}
+export { FrontmatterValidator } from "./frontmatter"

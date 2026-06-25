@@ -1,0 +1,80 @@
+// Design Tokens
+// Source of truth for all visual decisions. Every other stylesheet MUST
+// reference these tokens via CSS custom properties (var(--*)).
+// Spec: openspec/changes/reimagine-stargazer-as-digital-garden/specs/design-tokens/spec.md
+
+:root {
+  // ── Palette · light mode (Lapis Cafe inspired) ─────────────────
+  --surface-canvas: #f7f6f2;
+  --surface-elevated: #ede7df;
+  --accent-primary: #c9a97e;
+  --text-primary: #333333;
+  --text-muted: #686868;
+
+  // ── Status lifecycle ───────────────────────────────────────────
+  --status-seed: #9c9c9c;
+  --status-growing: #84a59d;
+  --status-evergreen: #c9a97e;
+  --status-complete: #6b6b6b;
+
+  // ── Drawer surface (VeryJack-flavored dark) ───────────────────
+  --drawer-bg: #1a1816;
+  --drawer-fg: #f0ece6;
+  --drawer-accent: #c9a97e;
+
+  // ── Typography stacks ──────────────────────────────────────────
+  --font-display: "Noto Sans SC", "Inter", system-ui, sans-serif;
+  --font-body: "Noto Sans SC", "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  // ── Spacing scale (4px base) ───────────────────────────────────
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  // ── Border radius ──────────────────────────────────────────────
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+
+  // ── Shadow ─────────────────────────────────────────────────────
+  --shadow-flat: none;
+  --shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.04);
+  --shadow-elevated: 0 8px 24px rgba(0, 0, 0, 0.08);
+
+  // ── Motion ─────────────────────────────────────────────────────
+  --motion-fast: 160ms;
+  --motion-base: 280ms;
+  --motion-slow: 480ms;
+  --motion-easing: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+// ── Palette · dark mode ─────────────────────────────────────────
+[data-theme="dark"] {
+  --surface-canvas: #1a1816;
+  --surface-elevated: #23201d;
+  --accent-primary: #c9a97e;
+  --text-primary: #f0ece6;
+  --text-muted: #9c9c9c;
+
+  --drawer-bg: #1a1816;
+  --drawer-fg: #f0ece6;
+  --drawer-accent: #c9a97e;
+
+  --shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.2);
+  --shadow-elevated: 0 8px 24px rgba(0, 0, 0, 0.32);
+}
+
+// ── Reduced motion ──────────────────────────────────────────────
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-fast: 0ms;
+    --motion-base: 0ms;
+    --motion-slow: 0ms;
+  }
+}

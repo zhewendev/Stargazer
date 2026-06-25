@@ -3,7 +3,26 @@
     "allow": [
       "Bash(ls /Users/11085273/myself/mistDoc/Stargazer/static 2>/dev/null && ls /Users/11085273/myself/mistDoc/Stargazer/quartz/i18n 2>/dev/null)",
       "Bash(ls /Users/11085273/myself/mistDoc/Stargazer/quartz/static 2>/dev/null; ls /Users/11085273/myself/mistDoc/Stargazer/quartz/i18n 2>/dev/null)",
-      "Bash(ls -la /Users/11085273/myself/mistDoc/Stargazer/.github 2>/dev/null; echo \"---\"; ls /Users/11085273/myself/mistDoc/Stargazer/.github/workflows 2>/dev/null)"
+      "Bash(ls -la /Users/11085273/myself/mistDoc/Stargazer/.github 2>/dev/null; echo \"---\"; ls /Users/11085273/myself/mistDoc/Stargazer/.github/workflows 2>/dev/null)",
+      "Bash(openspec validate --all 2>&1 | head -10)",
+      "Bash(grep -rn \"ContentPage\\\\|contentPage\" /Users/11085273/myself/mistDoc/Stargazer/quartz/plugins/pageTypes/ 2>&1 | head -10)",
+      "Bash(grep -rn \"PageTypeDispatcher\\\\|pageTypes\" /Users/11085273/myself/mistDoc/Stargazer/quartz.cfg.ts /Users/11085273/myself/mistDoc/Stargazer/quartz/plugins/index.ts 2>&1 | head -10)",
+      "Bash(grep -rn \"PageTypeDispatcher\\\\|pageTypes\" /Users/11085273/myself/mistDoc/Stargazer/quartz/ 2>&1 | grep -v node_modules | head -15)",
+      "Bash(grep -rn \"plugins.pageTypes\\\\|pageTypes:\" /Users/11085273/myself/mistDoc/Stargazer/quartz/ 2>&1 | grep -v node_modules | grep -v \"\\\\.test\\\\.\" | head -10)",
+      "Bash(grep -n \"builtinPageTypes\\\\|ContentPage\\\\|content-page\" /Users/11085273/myself/mistDoc/Stargazer/quartz/plugins/loader/config-loader.ts 2>&1 | head -15)",
+      "Bash(mkdir -p /Users/11085273/myself/mistDoc/Stargazer/src/lib /Users/11085273/myself/mistDoc/Stargazer/src/components/home /Users/11085273/myself/mistDoc/Stargazer/src/components/hub 2>&1 && ls /Users/11085273/myself/mistDoc/Stargazer/src/ 2>&1)",
+      "Bash(tail -20 /Users/11085273/myself/mistDoc/Stargazer/src/styles/home.scss 2>&1)",
+      "Bash(awk 'NR==482' /Users/11085273/myself/mistDoc/Stargazer/quartz/plugins/loader/config-loader.ts | od -c | head -3)",
+      "Bash(awk 'NR==482 {print length, $0}' /Users/11085273/myself/mistDoc/Stargazer/quartz/plugins/loader/config-loader.ts; echo \"---hex---\"; awk 'NR==482' /Users/11085273/myself/mistDoc/Stargazer/quartz/plugins/loader/config-loader.ts | xxd | tail -3)",
+      "Bash(sed -i '' 's|const builtinPageTypes = \\\\[builtinPlugins\\\\.PageTypes\\\\.NotFoundPageType\\(\\)\\\\] as const|const builtinPageTypes = [\\\\n    builtinPlugins.PageTypes.NotFoundPageType\\(\\),\\\\n    builtinPlugins.PageTypes.HomePageType\\(\\),\\\\n    builtinPlugins.PageTypes.HubPageType\\(\\),\\\\n  ] as const|' /Users/11085273/myself/mistDoc/Stargazer/quartz/plugins/loader/config-loader.ts && grep -n \"builtinPageTypes = \" /Users/11085273/myself/mistDoc/Stargazer/quartz/plugins/loader/config-loader.ts | head -3)",
+      "Bash(grep -n \"builtinPageTypes\" /Users/11085273/myself/mistDoc/Stargazer/quartz/plugins/loader/config-loader.ts | head -5)",
+      "Bash(python3:*)",
+      "Bash(grep -n -A 5 \"builtinPageTypes = \" /Users/11085273/myself/mistDoc/Stargazer/quartz/plugins/loader/config-loader.ts | head -10)",
+      "Bash(awk 'NR==476' /Users/11085273/myself/mistDoc/Stargazer/quartz/plugins/loader/config-loader.ts | xxd)",
+      "Bash(grep -n -A 2 \"builtinTransformers\" /Users/11085273/myself/mistDoc/Stargazer/quartz/plugins/loader/config-loader.ts | head -5)",
+      "Bash(lsof -nP -iTCP:8081 2>&1 | head -3)",
+      "Bash(pkill -f \"quartz build --serve\" 2>&1; sleep 2; npx quartz build 2>&1 | tail -30)",
+      "Bash(nohup npx quartz build --serve --port 8082 > /tmp/quartz-serve2.log 2>&1 &\necho \"PID: $!\"\nsleep 8\ncurl -sS -o /dev/null -w \"HTTP %{http_code} | %{size_download}B\\\\n\" --max-time 5 http://localhost:8082/ 2>&1)"
     ]
   }
 }

@@ -1,3 +1,8 @@
-@use "./variables.scss" as *;
-
-// put your custom CSS here!
+// Bridge to src/styles/ — the Stargazer custom layer
+// These files are owned outside `quartz/` so framework updates don't clobber
+// the brand work. Order matters: tokens first, then everything else.
+@use "../../src/styles/tokens";
+@use "../../src/styles/typography";
+@use "../../src/styles/components";
+@use "../../src/styles/layout";
+@use "../../src/styles/home";

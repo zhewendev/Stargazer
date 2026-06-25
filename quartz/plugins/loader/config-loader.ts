@@ -27,6 +27,19 @@ import { loadFramesFromPackage } from "./frameLoader"
 import { componentRegistry } from "../../components/registry"
 import { getCondition } from "./conditions"
 
+/**
+ * Returns true if the component is Quartz's built-in content-meta, so we can
+ * replace it with Stargazer's ArticleMeta. Identifies by displayName, function
+ * name, or the plugin name "content-meta".
+ */
+function isContentMetaComponent(c: QuartzComponent): boolean {
+  if (!c) return false
+  const name = (c as any).displayName ?? c.name
+  if (typeof name === "string" && name === "content-meta") return true
+  if (typeof name === "string" && name === "ContentMeta") return true
+  return false
+}
+
 const CONFIG_YAML_PATH = path.join(process.cwd(), "quartz.config.yaml")
 const DEFAULT_CONFIG_YAML_PATH = path.join(process.cwd(), "quartz.config.default.yaml")
 const LEGACY_PLUGINS_JSON_PATH = path.join(process.cwd(), "quartz.plugins.json")
@@ -473,13 +486,17 @@ export async function loadQuartzConfig(
 
   // Import built-in plugins
   const builtinPlugins = await import("../index")
-  const builtinTransformers: unknown[] = []
+  const builtinTransformers: unknown[] = [builtinPlugins.FrontmatterValidator] as const
   const builtinEmitters = [
     builtinPlugins.ComponentResources(),
     builtinPlugins.Assets(),
     builtinPlugins.Static(),
   ]
-  const builtinPageTypes = [builtinPlugins.PageTypes.NotFoundPageType()]
+  const builtinPageTypes = [
+    builtinPlugins.PageTypes.NotFoundPageType(),
+    builtinPlugins.PageTypes.HomePageType(),
+    builtinPlugins.PageTypes.HubPageType(),
+  ] as const
 
   const plugins: PluginTypes = {
     transformers: [...builtinTransformers, ...(await instantiate(transformers, "transformer"))],
@@ -708,11 +725,48 @@ export async function loadQuartzLayout(layoutOverrides?: {
     defaultLayout.footer = footer
   }
 
+  // ── Stargazer: inject BrandHeader + DrawerNav into every pageType ──
+  // Per design.md D13/D15/D17: BrandHeader (logo + 7 nav links) + DrawerNav
+  // (mobile nav + brand navigation surface) appear on every pageType.
+  // Imported from src/ to keep brand work outside the framework dir.
+  const BrandHeaderMod = await import("../../../src/components/BrandHeader")
+  const DrawerNavMod = await import("../../../src/components/DrawerNav")
+  const BrandHeaderCtor = BrandHeaderMod.default
+  const DrawerNavCtor = DrawerNavMod.default
+  const builtinHeaderComponents = [
+    BrandHeaderCtor(),
+    DrawerNavCtor(),
+  ]
+  defaultLayout.header = [...defaultLayout.header, ...builtinHeaderComponents]
+
+  // ── Stargazer: inject ArticleMeta + MetadataPanel into content pageType ──
+  // Per design.md D18: status chip surfaces (note header + metadata panel).
+  // ArticleMeta replaces Quartz's default content-meta for content pages.
+  // MetadataPanel sits in the right slot alongside TOC and Backlinks.
+  const ArticleMetaMod = await import("../../../src/components/ArticleMeta")
+  const MetadataPanelMod = await import("../../../src/components/MetadataPanel")
+  const ArticleMetaCtor = ArticleMetaMod.default
+  const MetadataPanelCtor = MetadataPanelMod.default
+  const contentPageType = byPageType["content"]
+  if (contentPageType) {
+    contentPageType.beforeBody = [
+      ArticleMetaCtor(),
+      ...(contentPageType.beforeBody ?? []).filter(
+        (c) => !isContentMetaComponent(c),
+      ),
+    ]
+    contentPageType.right = [
+      ...(contentPageType.right ?? []),
+      MetadataPanelCtor(),
+    ]
+  }
+
   // Ensure all byPageType entries inherit structural slots
   for (const pageType of Object.keys(byPageType)) {
     const pt = byPageType[pageType]
     if (!pt.head) pt.head = head
     if (!pt.header) pt.header = []
+    pt.header = [...pt.header, ...builtinHeaderComponents]
     if (footer && !pt.footer) pt.footer = footer
   }
 

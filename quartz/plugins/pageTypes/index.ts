@@ -1,3 +1,5 @@
 export { match } from "./matchers"
 export { NotFoundPageType } from "./404"
+export { HomePageType } from "./home"
+export { HubPageType } from "./hub"
 export { PageTypeDispatcher } from "./dispatcher"

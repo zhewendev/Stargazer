@@ -1,0 +1,337 @@
+// Component base styles
+// Reusable building blocks: button, chip, card, tree-node, scrim.
+// All values reference tokens.
+
+@use "sass:color";
+
+// ── Button ──────────────────────────────────────────────────────
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-6);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-display);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  border: 1px solid transparent;
+  cursor: pointer;
+  text-decoration: none;
+  transition:
+    background var(--motion-fast) var(--motion-easing),
+    color var(--motion-fast) var(--motion-easing),
+    border-color var(--motion-fast) var(--motion-easing),
+    transform var(--motion-fast) var(--motion-easing);
+
+  &:focus-visible {
+    outline: 2px solid var(--accent-primary);
+    outline-offset: 2px;
+  }
+}
+
+.btn-primary {
+  background: var(--accent-primary);
+  color: var(--surface-canvas);
+
+  &:hover {
+    background: color.adjust(#c9a97e, $lightness: -6%);
+    text-decoration: none;
+  }
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--text-primary);
+  border-color: var(--text-primary);
+
+  &:hover {
+    background: var(--text-primary);
+    color: var(--surface-canvas);
+    text-decoration: none;
+  }
+}
+
+// ── Chip ────────────────────────────────────────────────────────
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-sm);
+  background: var(--surface-elevated);
+  color: var(--text-muted);
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+.chip-glyph {
+  font-size: 1em;
+  line-height: 1;
+  // Glyph itself carries the color (not a dot fill), per D19.
+}
+
+.chip-label {
+  // Label inherits chip color.
+}
+
+// ── StatusChip variants (D19: color + glyph shape) ─────────────
+.chip-status {
+  background: transparent;
+
+  &.status-seed {
+    color: var(--status-seed);
+  }
+  &.status-growing {
+    color: var(--status-growing);
+  }
+  &.status-evergreen {
+    color: var(--status-evergreen);
+  }
+  &.status-complete {
+    color: var(--status-complete);
+  }
+}
+
+.status-chip-sm {
+  font-size: 0.75rem;
+  padding: 0 var(--space-1);
+}
+
+.status-chip-md {
+  font-size: 0.875rem;
+  padding: var(--space-1) var(--space-3);
+  background: var(--surface-elevated);
+}
+
+// ── Card ────────────────────────────────────────────────────────
+.card {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-elevated);
+  border-radius: var(--radius-md);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-flat);
+  transition:
+    box-shadow var(--motion-fast) var(--motion-easing),
+    transform var(--motion-fast) var(--motion-easing);
+
+  &:hover {
+    box-shadow: var(--shadow-soft);
+    transform: translateY(-2px);
+  }
+}
+
+.card-cover {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  margin-bottom: var(--space-4);
+}
+
+.card-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}
+
+// ── Tree node (drawer) ──────────────────────────────────────────
+.tree-node {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.tree-node-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  color: var(--drawer-fg);
+  text-decoration: none;
+  font-size: 0.9375rem;
+  transition: background var(--motion-fast) var(--motion-easing);
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.06);
+    text-decoration: none;
+  }
+}
+
+.tree-node-children {
+  list-style: none;
+  padding-left: var(--space-6);
+  margin: 0;
+}
+
+// ── Scrim (drawer overlay) ──────────────────────────────────────
+.scrim {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--motion-base) var(--motion-easing);
+
+  &.is-open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+// ── Article meta (note header strip, D18) ──────────────────────
+.article-meta {
+  margin: var(--space-4) 0 var(--space-8);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+
+  &-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3);
+    font-size: 0.875rem;
+    color: var(--text-muted);
+  }
+
+  &-date,
+  &-reading {
+    font-variant-numeric: tabular-nums;
+  }
+
+  &-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  &-tag {
+    display: inline-block;
+    padding: 0.125rem var(--space-2);
+    background: var(--surface-elevated);
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-decoration: none;
+
+    &:hover {
+      color: var(--accent-primary);
+      text-decoration: none;
+    }
+  }
+}
+
+// ── Metadata panel (right slot, D18) ────────────────────────────
+.metadata-panel {
+  padding: var(--space-4);
+  background: var(--surface-elevated);
+  border-radius: var(--radius-md);
+  font-size: 0.8125rem;
+  margin-bottom: var(--space-4);
+
+  &-title {
+    font-family: var(--font-display);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin: 0 0 var(--space-3);
+  }
+
+  &-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-2) 0;
+    border-bottom: 1px solid var(--surface-canvas);
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &-stack {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-2);
+    }
+  }
+
+  &-label {
+    flex-shrink: 0;
+    width: 3rem;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
+  }
+
+  &-row-stack &-label {
+    width: auto;
+  }
+
+  &-value {
+    color: var(--text-primary);
+    font-size: 0.8125rem;
+  }
+
+  &-desc {
+    margin: 0;
+    color: var(--text-primary);
+    line-height: 1.5;
+  }
+
+  &-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1);
+  }
+
+  &-tag {
+    display: inline-block;
+    padding: 0.125rem var(--space-2);
+    background: var(--surface-canvas);
+    border-radius: var(--radius-sm);
+    font-size: 0.6875rem;
+    color: var(--text-muted);
+    text-decoration: none;
+
+    &:hover {
+      color: var(--accent-primary);
+      text-decoration: none;
+    }
+  }
+}
+
+// ── Featured cards (D20: visually distinct variants) ───────────
+.featured-card-article {
+  // Default .card style already gives vertical cover-on-top layout.
+}
+
+.featured-card-project {
+  flex-direction: row;
+  align-items: flex-start;
+  text-align: left;
+  gap: var(--space-4);
+
+  .project-card-body {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+.featured-card-note {
+  padding: var(--space-4);
+}
+
+.hub-card {
+  // Same as featured-card-article for now; HubCards uses different title size (h4).
+}

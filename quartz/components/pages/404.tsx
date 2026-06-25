@@ -2,7 +2,7 @@ import { i18n } from "../../i18n"
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "../types"
 
 const NotFound: QuartzComponent = ({ cfg, ctx }: QuartzComponentProps) => {
-  const url = new URL(`https://${cfg.baseUrl ?? "example.com"}`)
+  const url = new URL(`https://${cfg.baseUrl?.trim() || "example.com"}`)
   const baseDir = ctx.argv.serve ? "/" : url.pathname
 
   return (

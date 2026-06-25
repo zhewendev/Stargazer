@@ -86,7 +86,7 @@ async function emitPage(
     slug === "404"
       ? ((ctx.argv.serve
           ? "/"
-          : new URL(`https://${cfg.baseUrl ?? "example.com"}`).pathname) as FullSlug)
+          : new URL(`https://${cfg.baseUrl?.trim() || "example.com"}`).pathname) as FullSlug)
       : pathToRoot(slug)
   const externalResources = pageResources(baseDir, resources, ctx)
   const componentData: QuartzComponentProps = {

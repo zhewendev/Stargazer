@@ -1,10 +1,13 @@
 ---
-title: 者文Blog
+# Home page is brand-driven; no in-content title (hero reads cfg.brand.name).
+# Subtitle/tagline/ctas remain in Home/hero.md for richer home-page copy.
+
 description: 记录金融·科技·随想
+type: home
+heroStyle: mountain
+sectionOrder:
+  - hero
+  - now
+  - featured
+  - projects
 ---
-
-
-# 欢迎 👋
-
-
-这里会分享我的公开笔记、研究摘录和碎片想法。
