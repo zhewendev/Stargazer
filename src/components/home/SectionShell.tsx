@@ -1,13 +1,13 @@
 // SectionShell — reusable wrapper for Home sections.
 // Renders a labeled section with optional "更多" link.
 
-import { JSX } from "preact"
+import { ComponentChildren } from "preact"
 
 interface SectionShellProps {
   title: string
   moreHref?: string
   moreLabel?: string
-  children: JSX.Element | JSX.Element[]
+  children: ComponentChildren
 }
 
 export function SectionShell({

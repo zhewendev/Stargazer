@@ -229,11 +229,7 @@ plugins:
       position: afterBody
       priority: 10
   - source: github:quartz-community/footer
-    enabled: true
-    options:
-      links:
-        GitHub: https://github.com/zhewendev
-        Discord Community: https://discord.gg/cRFFHYye7t
+    enabled: false
   - source: github:quartz-community/recent-notes
     enabled: false
   - source: github:quartz-community/spacer

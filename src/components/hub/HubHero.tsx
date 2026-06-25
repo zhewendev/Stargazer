@@ -14,6 +14,7 @@ import { getHeroStyle } from "../heroStyles"
 interface HubHeroProps {
   hubFile: QuartzPluginData
   allFiles: QuartzPluginData[]
+  hubScope: string
 }
 
 interface HubStats {
@@ -36,12 +37,13 @@ function computeStats(allFiles: QuartzPluginData[], hubScope: string): HubStats 
 
 const HUB_HERO_HEIGHT = 130
 
-export function HubHero({ hubFile, allFiles }: HubHeroProps) {
+export function HubHero({ hubFile, allFiles, hubScope }: HubHeroProps) {
   const title = (hubFile.frontmatter?.title as string | undefined) ?? hubFile.slug
   const description = (hubFile.frontmatter?.description as string | undefined) ?? ""
   const heroStyle = (hubFile.frontmatter?.heroStyle as string | undefined) ?? "mountain"
   const StyleComponent = getHeroStyle(heroStyle)
   const seed = hubFile.slug ?? "hub"
+  const stats = computeStats(allFiles, hubScope)
 
   return (
     <section class="hero hub-hero" style={{ minHeight: `${HUB_HERO_HEIGHT}px` }}>
@@ -61,6 +63,7 @@ export function HubHero({ hubFile, allFiles }: HubHeroProps) {
       <div class="hero-content hero-content-hub">
         <h1 class="hero-title hero-title-hub">{title}</h1>
         {description && <p class="hero-subtitle hero-subtitle-hub">{description}</p>}
+        <p class="hub-stats">{stats.total} 笔记 · {stats.growing} 生长中 · {stats.evergreen} 常青</p>
       </div>
     </section>
   )

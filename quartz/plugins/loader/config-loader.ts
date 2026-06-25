@@ -726,6 +726,14 @@ export async function loadQuartzLayout(layoutOverrides?: {
     defaultLayout.footer = footer
   }
 
+  // ── Stargazer: replace community footer with BrandFooter for all pageTypes ──
+  // Per P8: BrandFooter provides copyright, social links, and theme credit.
+  // Replaces the default Quartz community footer plugin.
+  const BrandFooterMod = await import("../../../src/components/BrandFooter")
+  const BrandFooterCtor = BrandFooterMod.default
+  const brandFooter = BrandFooterCtor()
+  defaultLayout.footer = brandFooter
+
   // ── Stargazer: inject BrandHeader + DrawerNav into every pageType ──
   // Per design.md D13/D15/D17: BrandHeader (logo + 7 nav links) + DrawerNav
   // (mobile nav + brand navigation surface) appear on every pageType.
@@ -768,7 +776,7 @@ export async function loadQuartzLayout(layoutOverrides?: {
     if (!pt.head) pt.head = head
     if (!pt.header) pt.header = []
     pt.header = [...pt.header, ...builtinHeaderComponents]
-    if (footer && !pt.footer) pt.footer = footer
+    if (brandFooter && !pt.footer) pt.footer = brandFooter
   }
 
   const mergedDefaults = { ...defaultLayout, ...layoutOverrides?.defaults }

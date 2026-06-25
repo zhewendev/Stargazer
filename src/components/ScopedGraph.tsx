@@ -333,6 +333,7 @@ const scopedGraphScript = `
 })();
 `
 
+export { ScopedGraphComponent }
 export const ScopedGraph: QuartzComponent = (() => {
   const Comp: QuartzComponent = (props: any) => {
     return ScopedGraphComponent({

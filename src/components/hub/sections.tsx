@@ -7,7 +7,7 @@ import type { QuartzPluginData } from "../../../quartz/plugins/vfile"
 import { querySection, type SectionFilter } from "../../lib/contentQuery"
 import { resolveRelative, FullSlug } from "../../../quartz/util/path"
 import { StatusChip } from "../StatusChip"
-import { ScopedGraph } from "../ScopedGraph"
+import { ScopedGraphComponent } from "../ScopedGraph"
 
 export interface HubSectionSpec {
   title: string
@@ -87,12 +87,24 @@ export function ListSection({
           const href = resolveRelative("index" as FullSlug, file.slug as FullSlug)
           const title = (file.frontmatter?.title as string | undefined) ?? file.slug
           const date = file.dates?.modified
+          const status = file.frontmatter?.status as string | undefined
+          const tags = (file.frontmatter?.tags ?? []) as string[]
           return (
             <li key={file.slug} class="hub-list-row">
               <a class="hub-list-link" href={href}>{title}</a>
-              {date && (
-                <span class="hub-list-date">{date.toISOString().slice(0, 10)}</span>
-              )}
+              <div class="hub-list-meta">
+                {status && <StatusChip status={status} size="sm" />}
+                {tags.length > 0 && (
+                  <span class="hub-list-tags">
+                    {tags.slice(0, 3).map((tag) => (
+                      <span key={tag} class="hub-list-tag">#{tag}</span>
+                    ))}
+                  </span>
+                )}
+                {date && (
+                  <span class="hub-list-date">{date.toISOString().slice(0, 10)}</span>
+                )}
+              </div>
             </li>
           )
         })}
@@ -147,7 +159,7 @@ export function GraphSection({
   hubScope?: string
 }) {
   return (
-    <ScopedGraph
+    <ScopedGraphComponent
       spec={spec}
       allFiles={allFiles}
       hubScope={spec.scope ?? hubScope}
@@ -169,7 +181,7 @@ export function HubSectionDispatcher(props: {
     case "compact-list":
       return <CompactListSection {...props} />
     case "graph":
-      return <GraphSection spec={props.spec} />
+      return <GraphSection spec={props.spec} allFiles={props.allFiles} hubScope={props.hubScope} />
     default:
       return null
   }

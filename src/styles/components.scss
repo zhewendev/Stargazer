@@ -368,3 +368,86 @@
     }
   }
 }
+
+// ── Dark mode toggle (14.2) — brand-matched override ────────────
+// Overrides the community darkmode plugin's default gray SVG fill
+// with the Lapis Cafe warm-tan accent.
+
+.darkmode {
+  & svg {
+    fill: var(--text-muted);
+    transition: fill var(--motion-fast) var(--motion-easing), opacity 0.1s ease;
+  }
+
+  &:hover svg {
+    fill: var(--accent-primary);
+  }
+}
+
+// ── Tag page de-emphasis (14.3) — secondary navigation role ─────
+// Tag pages are secondary to folder pages (D5, Q5). Visual treatment:
+// smaller title, lighter weight, muted tag indicator.
+
+.page-listing .section-li > .section > .desc > h3 {
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+
+// ── Focus-visible ring for all interactive elements (12.3) ──────
+// Consistent 2px accent outline on keyboard focus, no ring on mouse click.
+
+a:focus-visible,
+button:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+// Card links (now-card, project-card are <a> tags)
+.now-card:focus-visible,
+.project-card:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+  text-decoration: none;
+}
+
+// Hub list links
+.hub-list-link:focus-visible,
+.hub-compact-link:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+// Section shell "更多 →" links
+.section-shell-more:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+// Brand footer social links
+.brand-footer-social-link:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+// Tag links in article meta and metadata panel
+.article-meta-tag:focus-visible,
+.metadata-panel-tag:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 1px;
+}
+
+// Tree node rows in drawer
+.tree-node-row:focus-visible {
+  outline: 2px solid var(--drawer-accent);
+  outline-offset: 1px;
+}
+
+// Card that is a direct <a> wrapper
+a.card:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}

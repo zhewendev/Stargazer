@@ -37,6 +37,8 @@ Graph
 - Break graph
 - Break search
 - Rename files automatically
+- Hardcode content in components — all copy must come from markdown frontmatter or config
+- Modify `.quartz/plugins/` source files directly — use wrappers, config, or CSS overrides instead
 
 # Workflow
 
@@ -102,5 +104,4 @@ If a plugin's behavior cannot be changed via wrappers or config:
 
 | Plugin | File | Change | Reason | Date |
 |--------|------|--------|--------|------|
-| folder-page | `src/components/PageList.tsx` | Card-grid layout + status chips + backlinks/wikilinks slots | P9: replace list view with card grid; D42: populate graph metadata | 2025-01 |
-| tag-page | `src/components/PageList.tsx` | Identical card-grid (shared implementation D33) | P9: consistent folder/tag card rendering | 2025-01 |
+| *(none yet — all customizations use the allowed wrapper/config/CSS approaches above)* |

@@ -2,7 +2,8 @@
 //
 // Layout: Graph Hero → Full Graph View → Related Notes → Recent Updates
 // No sidebar crop — full-width graph container.
-// Supports deep links via /graph?focus=<slug> (D43).
+// Supports deep links via /graph?focus=<slug> (D43) — centers, highlights, and
+// expands neighbors around the target node.
 
 import type { QuartzPluginData } from "../../quartz/plugins/vfile"
 import type { QuartzComponent } from "../../quartz/components/types"
@@ -295,9 +296,16 @@ const graphPageScript = `
             setTimeout(function() {
               var target = nodeMap.get(focusSlug);
               if (target) {
+                // Pin the target at center & reheat simulation
+                target.fx = 0; target.fy = 0;
+                sim.force("center", d3.forceCenter().strength(0.6));
+                sim.alpha(0.5).restart();
+                // Highlight the target and its neighbors
                 hoveredId = focusSlug;
                 hiNeigh();
                 draw();
+                // Release the pin after ~3s so the graph can drift naturally
+                setTimeout(function() { target.fx = null; target.fy = null; }, 3000);
               }
             }, 2000);
           }

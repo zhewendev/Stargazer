@@ -72,29 +72,29 @@
 
 ## 6. Components — Home PageType Composition
 
-- [ ] 6.1 Create `src/components/home/Hero.tsx` reading `content/Home/hero.md` for copy and `heroStyle` for illustration
-- [ ] 6.2 Create `src/components/home/SectionShell.tsx` with title + "更多→" link slot
-- [ ] 6.3 Create `src/components/home/NowSection.tsx` reading `content/Now/*.md` in alphabetical order
-- [ ] 6.4 Create `src/components/home/FeaturedSection.tsx` partitioning by `featuredType` per home-page spec
-- [ ] 6.5 Create `src/components/home/ProjectsSection.tsx` reading `content/Projects/*.md`
-- [ ] 6.6 Implement `sectionOrder` override on `index.md` (default: Hero, Now, Featured, Projects)
-- [ ] 6.7 Verify Home excludes Explorer, TOC, Backlinks in all slots
+- [x] 6.1 Create `src/components/home/Hero.tsx` reading `content/Home/hero.md` for copy and `heroStyle` for illustration
+- [x] 6.2 Create `src/components/home/SectionShell.tsx` with title + "更多→" link slot
+- [x] 6.3 Create `src/components/home/NowSection.tsx` reading `content/Now/*.md` in alphabetical order
+- [x] 6.4 Create `src/components/home/FeaturedSection.tsx` partitioning by `featuredType` per home-page spec
+- [x] 6.5 Create `src/components/home/ProjectsSection.tsx` reading `content/Projects/*.md`
+- [x] 6.6 Implement `sectionOrder` override on `index.md` (default: Hero, Now, Featured, Projects)
+- [x] 6.7 Verify Home excludes Explorer, TOC, Backlinks in all slots
 
 ## 7. Components — Hub PageType Composition
 
-- [ ] 7.1 Implement sections DSL parser for Hub `index.md` `sections` array
-- [ ] 7.2 Implement Hub hero block honoring `hubHero` default-true and `heroStyle` with 50% scale
-- [ ] 7.3 Implement auto-computed stats line: total note count, growing count, evergreen count
-- [ ] 7.4 Implement `cards` section type with cover image + title + description + meta
-- [ ] 7.5 Implement `list` section type with horizontal rows + title + date + status chip + tags
-- [ ] 7.6 Implement `compact-list` section type with single-line rows + thin dividers
-- [ ] 7.7 Implement `graph` section type using scoped graph per graph-hub-integration spec
-- [ ] 7.8 Wire Hub pageType with Breadcrumbs (beforeBody), Explorer (left desktop), TOC + Backlinks (right)
+- [x] 7.1 Implement sections DSL parser for Hub `index.md` `sections` array
+- [x] 7.2 Implement Hub hero block honoring `hubHero` default-true and `heroStyle` with 50% scale
+- [x] 7.3 Implement auto-computed stats line: total note count, growing count, evergreen count
+- [x] 7.4 Implement `cards` section type with cover image + title + description + meta
+- [x] 7.5 Implement `list` section type with horizontal rows + title + date + status chip + tags
+- [x] 7.6 Implement `compact-list` section type with single-line rows + thin dividers
+- [x] 7.7 Implement `graph` section type using scoped graph per graph-hub-integration spec
+- [x] 7.8 Wire Hub pageType with Breadcrumbs (beforeBody), Explorer (left desktop), TOC + Backlinks (right)
 
 ## 8. Components — Brand Footer
 
-- [ ] 8.1 Create `src/components/BrandFooter.tsx` with copyright, social links (GitHub, Email, RSS), theme credit
-- [ ] 8.2 Replace default footer in `quartz.config.yaml` with BrandFooter in all pageTypes
+- [x] 8.1 Create `src/components/BrandFooter.tsx` with copyright, social links (GitHub, Email, RSS), theme credit
+- [x] 8.2 Replace default footer in `quartz.config.yaml` with BrandFooter in all pageTypes
 
 ## 9. Card Grid Override (Folder & Tag Pages)
 
@@ -110,16 +110,16 @@
 
 ## 10. Content Skeleton
 
-- [ ] 10.1 Create `content/Home/hero.md` with subtitle, tagline, two CTAs
-- [ ] 10.2 Update `content/index.md` to frontmatter-only: `title`, `type: home`, `heroStyle: mountain`
-- [ ] 10.3 Create `content/Knowledge/Android/index.md` as type: hub with sections DSL
-- [ ] 10.4 Create `content/Knowledge/AI/index.md`, `自动化与工具/`, `阅读与思考/`, `生活与效率/` as type: hub
-- [ ] 10.5 Create `content/Projects/index.md` as type: hub
-- [ ] 10.6 Create `content/Projects/{auto-account,fastbuild,ai-workflow}.md` placeholder notes
-- [ ] 10.7 Create `content/Now/{ai-coding,auto-account,android,reading}.md` placeholder notes
-- [ ] 10.8 Create `content/About.md`
-- [ ] 10.9 Create `content/Resources/index.md` as type: hub
-- [ ] 10.10 Create `content/Resources/{books,tools,links}.md` placeholder notes
+- [x] 10.1 Create `content/Home/hero.md` with subtitle, tagline, two CTAs
+- [x] 10.2 Update `content/index.md` to frontmatter-only: `title`, `type: home`, `heroStyle: mountain`
+- [x] 10.3 Create `content/Knowledge/Android/index.md` as type: hub with sections DSL
+- [x] 10.4 Create `content/Knowledge/AI/index.md`, `自动化与工具/`, `阅读与思考/`, `生活与效率/` as type: hub
+- [x] 10.5 Create `content/Projects/index.md` as type: hub
+- [x] 10.6 Create `content/Projects/{auto-account,fastbuild,ai-workflow}.md` placeholder notes
+- [x] 10.7 Create `content/Now/{ai-coding,auto-account,android,reading}.md` placeholder notes
+- [x] 10.8 Create `content/About.md`
+- [x] 10.9 Create `content/Resources/index.md` as type: hub
+- [x] 10.10 Create `content/Resources/{books,tools,links}.md` placeholder notes
 
 ## 11. Graph × Hub Integration
 
@@ -132,20 +132,20 @@
 
 ## 12. Polish
 
-- [ ] 12.1 Verify dark mode toggle flips all palette tokens (light + dark + status + drawer)
-- [ ] 12.2 Verify `prefers-reduced-motion: reduce` disables drawer animation and any other transitions
-- [ ] 12.3 Add focus-visible styles to all interactive elements (drawer trigger, CTAs, chips, cards)
-- [ ] 12.4 Verify status filter in metadata panel persists across navigation within session
-- [ ] 12.5 Verify Hero illustration variants render identically across builds (deterministic seed)
-- [ ] 12.6 Verify build fails on invalid frontmatter (status, featured without featuredType, unknown heroStyle, invalid section type)
-- [ ] 12.7 Validate OpenSpec change with `openspec validate reimagine-stargazer-as-digital-garden`
-- [ ] 12.8 Visual regression sweep: confirm Home, Hubs, content, folder, tag, 404 pages all render correctly
+- [x] 12.1 Verify dark mode toggle flips all palette tokens (light + dark + status + drawer)
+- [x] 12.2 Verify `prefers-reduced-motion: reduce` disables drawer animation and any other transitions
+- [x] 12.3 Add focus-visible styles to all interactive elements (drawer trigger, CTAs, chips, cards)
+- [x] 12.4 Verify status filter in metadata panel persists across navigation within session
+- [x] 12.5 Verify Hero illustration variants render identically across builds (deterministic seed)
+- [x] 12.6 Verify build fails on invalid frontmatter (status, featured without featuredType, unknown heroStyle, invalid section type)
+- [x] 12.7 Validate OpenSpec change with `openspec validate reimagine-stargazer-as-digital-garden`
+- [x] 12.8 Visual regression sweep: confirm Home, Hubs, content, folder, tag, 404 pages all render correctly
 
 ## 13. Documentation
 
-- [ ] 13.1 Update `AGENTS.md` "Do Not" section if any new constraints emerge from implementation
-- [ ] 13.2 Add a `_meta/taxonomy.md` note documenting the frontmatter schema in plain prose for the author
-- [ ] 13.3 Add a `_meta/hero-variants.md` note showing available hero illustration variants and when to use each
+- [x] 13.1 Update `AGENTS.md` "Do Not" section if any new constraints emerge from implementation
+- [x] 13.2 Add a `_meta/taxonomy.md` note documenting the frontmatter schema in plain prose for the author
+- [x] 13.3 Add a `_meta/hero-variants.md` note showing available hero illustration variants and when to use each
 - [ ] 13.4 Run `openspec archive reimagine-stargazer-as-digital-garden` after all tasks complete
 
 ## 14. Future Work (follow-up change)
@@ -153,6 +153,6 @@
 The following items are intentionally **out of scope** for this change and tracked here so they aren't forgotten. They will become a separate `openspec/changes/<name>/` proposal.
 
 - [x] 14.1 **Standalone `/graph` page** — implemented in P11: new `graph` pageType, GraphPage component with Hero+Graph+Related+Recent layout, deep link support via `/graph?focus=<slug>`, node hierarchy by status (D39). Navigation label: "知识图谱".
-- [ ] 14.2 **Dark mode toggle visual treatment** — current toggle uses default Quartz UI; redesign to match the warm-tan brand.
+- [x] 14.2 **Dark mode toggle visual treatment** — CSS override in components.scss: brand-colored SVG fill (text-muted → accent-primary on hover), smooth transition.
 - [ ] 14.3 **Tag pages visual de-emphasis** — per design.md Q5 (Folder Primary, Tag Secondary), tag pages render today with the same chrome as content pages; revisit to express their secondary role.
 - [ ] 14.4 **Notes encryption (`encrypted-pages` plugin UX)** — plugin is enabled but no encryption UX exists; design and implement password-gating flow.

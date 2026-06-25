@@ -59,7 +59,7 @@ const Hub: QuartzComponent = ({ fileData, allFiles }: {
 
   return (
     <article class="hub-page">
-      {!hubHeroDisabled && <HubHero hubFile={fileData} allFiles={allFiles} />}
+      {!hubHeroDisabled && <HubHero hubFile={fileData} allFiles={allFiles} hubScope={hubScope} />}
       <div class="hub-sections">
         {sections.map((spec, i) => (
           <HubSectionDispatcher
