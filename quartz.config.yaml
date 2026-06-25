@@ -7,7 +7,7 @@ configuration:
   analytics:
     provider: plausible
   locale: zh-CN
-  baseUrl: /Stargazer
+  baseUrl: ""
   ignorePatterns:
     - private
     - templates
