@@ -53,6 +53,14 @@ export const pageTypeRegistry: PageTypeSpec[] = [
     description:
       "Wikipedia-Portal-style landing page; renders declarative `sections` from index.md.",
   },
+  {
+    name: "graph",
+    layout: "graph",
+    priority: 80,
+    match: ({ slug }) => slug === "graph",
+    description:
+      "Standalone knowledge atlas page; full-width global graph with related notes and recent updates.",
+  },
 ]
 
 /**

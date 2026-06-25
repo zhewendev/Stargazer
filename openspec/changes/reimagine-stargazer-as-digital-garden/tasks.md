@@ -123,9 +123,12 @@
 
 ## 11. Graph × Hub Integration
 
-- [ ] 11.1 Update Graph component (or wrap it) to size Hub nodes 1.6× default and accent-color them
-- [ ] 11.2 Implement scoped graph section component used by Hub pageType's `type: graph` sections
-- [ ] 11.3 Verify scoped graph filter, height, and `aria-label` per graph-hub-integration spec
+- [x] 11.1 Implement scoped graph section component used by Hub pageType's `type: graph` sections — `ScopedGraph.tsx` wrapper component with status-based node radii (D39: Hub=1.8x, Evergreen=1.4x, Growing=1.2x, Seed=1.0x)
+- [x] 11.2 Build standalone `/graph` page (D40) — new `graph` pageType with Graph Hero + Full Graph View + Related Notes + Recent Updates layout; no sidebar crop
+- [x] 11.3 Add graph deep link support `/graph?focus=<slug>` (D43) — highlights and centers on the target node
+- [x] 11.4 Populate reserved metadata slots: backlinks + wikilinks counts on card grids (D42)
+- [x] 11.5 Navigation label updated to "知识图谱" (D41) in both BrandHeader and DrawerNav
+- [x] 11.6 Document plugin override strategy in AGENTS.md (D44) — wrapper-first approach, no direct plugin modification
 
 ## 12. Polish
 
@@ -149,7 +152,7 @@
 
 The following items are intentionally **out of scope** for this change and tracked here so they aren't forgotten. They will become a separate `openspec/changes/<name>/` proposal.
 
-- [ ] 14.1 **Standalone `/graph` page** — register a new `graph` pageType that renders a dedicated graph view (full width, no sidebar crop). PageType Registry entry: `match: (fd) => fd.slug === "graph"`. Renders the existing graph plugin's output with hub-prominence rules from `specs/graph-hub-integration.md`. Add a layout.byPageType.graph entry. Wire a `quartz/components/pages/Graph.tsx` pageBody that invokes the graph plugin with the full node set.
+- [x] 14.1 **Standalone `/graph` page** — implemented in P11: new `graph` pageType, GraphPage component with Hero+Graph+Related+Recent layout, deep link support via `/graph?focus=<slug>`, node hierarchy by status (D39). Navigation label: "知识图谱".
 - [ ] 14.2 **Dark mode toggle visual treatment** — current toggle uses default Quartz UI; redesign to match the warm-tan brand.
 - [ ] 14.3 **Tag pages visual de-emphasis** — per design.md Q5 (Folder Primary, Tag Secondary), tag pages render today with the same chrome as content pages; revisit to express their secondary role.
 - [ ] 14.4 **Notes encryption (`encrypted-pages` plugin UX)** — plugin is enabled but no encryption UX exists; design and implement password-gating flow.

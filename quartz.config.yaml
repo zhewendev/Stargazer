@@ -297,6 +297,18 @@ layout:
         beforeBody: []
         left: []
         right: []
+    graph:
+      exclude:
+        - article-title
+        - content-meta
+        - reader-mode
+        - explorer
+        - toc
+        - backlinks
+      positions:
+        beforeBody: []
+        left: []
+        right: []
     hub:
       exclude:
         - article-title

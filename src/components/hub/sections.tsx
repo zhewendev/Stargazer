@@ -7,6 +7,7 @@ import type { QuartzPluginData } from "../../../quartz/plugins/vfile"
 import { querySection, type SectionFilter } from "../../lib/contentQuery"
 import { resolveRelative, FullSlug } from "../../../quartz/util/path"
 import { StatusChip } from "../StatusChip"
+import { ScopedGraph } from "../ScopedGraph"
 
 export interface HubSectionSpec {
   title: string
@@ -135,29 +136,22 @@ export function CompactListSection({
   )
 }
 
-// ── Graph (placeholder; full implementation in P11) ─────────────
-export function GraphSection({ spec }: { spec: HubSectionSpec }) {
-  const height = spec.height ?? 320
+// ── Graph (scoped knowledge graph; P11) ──────────────────────────
+export function GraphSection({
+  spec,
+  allFiles,
+  hubScope,
+}: {
+  spec: HubSectionSpec
+  allFiles: QuartzPluginData[]
+  hubScope?: string
+}) {
   return (
-    <div class="hub-section">
-      <h3 class="hub-section-title">{spec.title}</h3>
-      <div
-        class="hub-graph-placeholder"
-        style={{
-          height: `${height}px`,
-          background: "var(--surface-elevated)",
-          borderRadius: "var(--radius-md)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          color: "var(--text-muted)",
-          fontSize: "0.875rem",
-        }}
-        aria-label={`Graph scoped to: ${spec.title}`}
-      >
-        知识图谱 · {spec.title} (P11)
-      </div>
-    </div>
+    <ScopedGraph
+      spec={spec}
+      allFiles={allFiles}
+      hubScope={spec.scope ?? hubScope}
+    />
   )
 }
 

@@ -335,3 +335,36 @@
 .hub-card {
   // Same as featured-card-article for now; HubCards uses different title size (h4).
 }
+
+// ── Scoped graph (Hub section, P11) ─────────────────────────────
+.scoped-graph-container {
+  position: relative;
+  canvas {
+    display: block;
+  }
+}
+
+.scoped-graph-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+}
+
+.hub-section-title {
+  .hub-graph-full-link {
+    float: right;
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: var(--text-muted);
+    text-decoration: none;
+
+    &:hover {
+      color: var(--accent-primary);
+      text-decoration: none;
+    }
+  }
+}

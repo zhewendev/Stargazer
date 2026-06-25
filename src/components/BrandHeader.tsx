@@ -19,7 +19,7 @@ const NAV_ITEMS: NavItem[] = [
   { key: "projects", label: "项目", href: "/Projects" },
   { key: "now", label: "现在", href: "/Now" },
   { key: "resources", label: "资源", href: "/Resources" },
-  { key: "graph", label: "图谱", href: "/graph" },
+  { key: "graph", label: "知识图谱", href: "/graph" },
   { key: "about", label: "关于", href: "/About" },
 ]
 

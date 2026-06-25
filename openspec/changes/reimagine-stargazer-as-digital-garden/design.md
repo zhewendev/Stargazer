@@ -479,6 +479,120 @@ Both share the HeroStyle registry so the visual language is consistent. They dif
 - _Implement graph as a placeholder SVG now_ — rejected: placeholder art becomes a trap; reserving without an implementation is more honest.
 - _Don't reserve; decide later_ — rejected: late discovery of name conflicts between independent phases.
 
+### D36. Graph as knowledge discovery tool
+
+**Choice.** The graph is positioned as a knowledge discovery surface, not a decorative visualization. The standalone `/graph` page surfaces connection density (link counts), node prominence (status-based radii), and navigation aids (hover highlighting, click-to-navigate). The Related Notes section surfaces the most-connected notes; Recent Updates shows temporal activity.
+
+**Why.** D36 user constraint: "Graph is a knowledge discovery tool, not just a visualization." A decorative graph is glanced at and dismissed. A discovery tool invites exploration — "What's connected?", "What's missing?", "What's central?"
+
+**Alternatives considered.**
+- _Graph as a sidebar widget only_ — rejected: sidebar crop limits readability; global graph deserves full viewport.
+- _Graph as a static image_ — rejected: no interaction, no discovery value.
+
+### D37. Scoped Hub graphs over global graphs
+
+**Choice.** Hub pages default to scoped graphs (via `type: graph` sections) that show only the hub's notes plus one-hop neighbors. The global graph is available via the "完整图谱 →" link on every scoped graph and via the standalone `/graph` page.
+
+**Why.** D37 user constraint: "Prioritize scoped Hub graphs over global graphs." A global graph with 500+ nodes is overwhelming on a Hub page. A scoped graph with 5-20 nodes reveals the hub's internal structure and immediate connections.
+
+**Alternatives considered.**
+- _Global graph everywhere, filtered client-side_ — rejected: too many nodes, poor UX on Hub pages.
+- _Scoped graphs only, no global access_ — rejected: loses the big-picture value of the global graph.
+
+### D38. Hub DSL `type: graph` section support
+
+**Choice.** The existing Hub sections DSL already declares `type: "graph"` as an allowed type. P11 replaces the placeholder with `ScopedGraph`, a component that:
+- Reads `querySection()` results at build time
+- Serializes scope slugs + status→radius map into `data-cfg`
+- Renders a PixiJS/D3 force graph limited to the scope
+- Shows a "完整图谱 →" link to `/graph`
+
+```yaml
+sections:
+  - title: 知识图谱
+    type: graph
+    filter:
+      status: [growing, evergreen]
+    height: 400
+```
+
+**Why.** D38 user constraint: "Support Hub DSL sections with type: graph." The DSL already reserved this type; implementing it completes the contract without changing the authoring experience.
+
+### D39. Node hierarchy by status
+
+**Choice.** Node radii are multiplied by status:
+| Status | Multiplier | Rationale |
+|--------|-----------|-----------|
+| Hub (folder index) | 1.8× | Structural anchor of the knowledge area |
+| Evergreen | 1.4× | Mature, reliable, central to understanding |
+| Growing | 1.2× | Active, evolving, gaining connections |
+| Seed / Complete | 1.0× | Baseline — present but not visually dominant |
+
+The formula: `radius = (2 + √linkCount) × statusMultiplier`
+
+**Why.** D39 user constraint: explicit multipliers for each status tier. Visual prominence should reflect knowledge maturity, not just connection count. A seed note with 10 links shouldn't outsize an evergreen with 8.
+
+**Alternatives considered.**
+- _Radius by link count only (default D3 behavior)_ — rejected: ignores the garden's maturity signal.
+- _Fixed sizes per type_ — rejected: doesn't scale as notes gain/lose connections.
+
+### D40. Standalone /graph page layout
+
+**Choice.** The `/graph` page uses a dedicated `graph` pageType (registered in `pageTypeRegistry` with `match: slug === "graph"`). Layout:
+
+```
+┌─────────────────────────────────────┐
+│         Graph Hero (知识图谱)        │
+│   Knowledge Atlas — tagline + stats  │
+├─────────────────────────────────────┤
+│                                     │
+│        Full Graph View              │
+│        (70vh, no sidebar crop)       │
+│                                     │
+├─────────────────────────────────────┤
+│  Related Notes (6 most-connected)   │
+├─────────────────────────────────────┤
+│  Recent Updates (10 most recent)    │
+└─────────────────────────────────────┘
+```
+
+No sidebars, no TOC, no backlinks — the graph occupies the full page width.
+
+**Why.** D40 user constraint: "Graph page should not be graph-only." A full-page graph component with no context is disorienting. The hero explains what it is; related notes show what's worth exploring; recent updates show what's active.
+
+### D41. Navigation label: 知识图谱
+
+**Choice.** The nav entry is labeled "知识图谱" (Knowledge Atlas) instead of the raw English "Graph". Both BrandHeader and DrawerNav use this label.
+
+**Why.** D41 user constraint. "图谱" conveys the knowledge-network meaning; "Graph" alone sounds like a chart. "知识图谱" = Knowledge Atlas = a map of interconnected concepts.
+
+### D42. Reserved metadata slots: backlinks and wikilinks
+
+**Choice.** The card grid's `content-card-graph-meta` footer area (reserved in P9/D35) now populates:
+- **backlinks** — count of other notes linking to this one (computed by scanning all `frontmatter.links` across `allFiles`)
+- **wikilinks** — count of outgoing links from this note (from `frontmatter.links.length`)
+
+Values render as small numbers in the slot; zero-count slots remain empty but maintain consistent footer height.
+
+**Why.** D42 user constraint. These graph signals answer "is this note central?" (backlinks) and "is this note well-connected?" (wikilinks) at a glance in the card grid.
+
+### D43. Graph deep links: /graph?focus=<slug>
+
+**Choice.** The `/graph` page reads `?focus=<slug>` from the URL. When present, after the graph simulation settles (2s delay), it highlights the target node and its neighbors. The node is not automatically centered (PixiJS stage pan would require additional camera logic), but the visual highlighting makes it immediately findable.
+
+**Why.** D43 user constraint. Deep links enable "Show me this note's neighborhood" from card grids, search results, or external references.
+
+### D44. Plugin override strategy
+
+**Choice.** Third-party plugins under `.quartz/plugins/` must NOT be modified directly. Customizations use:
+1. **Wrapper components** in `src/components/` (e.g., `ScopedGraph.tsx` wraps graph rendering without touching the plugin)
+2. **Config-level overrides** via `quartz.config.yaml` `layout.byPageType`
+3. **CSS overrides** in `src/styles/`
+
+When source modification is unavoidable (as with folder-page/tag-page PageList for card-grid), the change is documented in `AGENTS.md` under "Plugin Source Modifications (tracked)" with a table recording plugin, file, change, reason, and date.
+
+**Why.** D44 user constraint: "Avoid further direct modifications of third-party plugin repositories." Documenting the strategy prevents drift and makes future maintenance predictable.
+
 ## Risks / Trade-offs
 
 - **[Frontmatter drift]** → _Mitigation_: schema documented in `specs/frontmatter-schema/`; every new field tested by at least one section or component.
