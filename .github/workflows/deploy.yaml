@@ -47,6 +47,9 @@ jobs:
       - name: Build site
         run: npx quartz build
 
+      - name: Remove CNAME (prevents custom-domain redirect on project sites)
+        run: rm -f public/CNAME
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
