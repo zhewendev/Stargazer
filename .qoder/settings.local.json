@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls /Users/11085273/myself/mistDoc/Stargazer/static 2>/dev/null && ls /Users/11085273/myself/mistDoc/Stargazer/quartz/i18n 2>/dev/null)",
+      "Bash(ls /Users/11085273/myself/mistDoc/Stargazer/quartz/static 2>/dev/null; ls /Users/11085273/myself/mistDoc/Stargazer/quartz/i18n 2>/dev/null)",
+      "Bash(ls -la /Users/11085273/myself/mistDoc/Stargazer/.github 2>/dev/null; echo \"---\"; ls /Users/11085273/myself/mistDoc/Stargazer/.github/workflows 2>/dev/null)"
+    ]
+  }
+}

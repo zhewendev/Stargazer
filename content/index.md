@@ -1,6 +1,6 @@
 ---
-title: 者文的数字花园   # 浏览器标题与页面 H1
-description: 记录金融·科技·随想   # 可选；用于 SEO 与摘要
+title: 者文Blog
+description: 记录金融·科技·随想
 ---
 
 
