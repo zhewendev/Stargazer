@@ -26,12 +26,12 @@ interface KnowledgeHub {
 
 const NAV_ITEMS: NavItem[] = [
   { key: "home", label: "首页", href: "/" },
-  { key: "knowledge", label: "知识库", href: "/Knowledge", expandable: true },
-  { key: "projects", label: "项目", href: "/Projects" },
-  { key: "now", label: "现在", href: "/Now" },
-  { key: "resources", label: "资源", href: "/Resources" },
+  { key: "knowledge", label: "知识库", href: "/knowledge", expandable: true },
+  { key: "projects", label: "项目", href: "/projects" },
+  { key: "now", label: "现在", href: "/now" },
+  { key: "resources", label: "资源", href: "/resources" },
   { key: "graph", label: "知识图谱", href: "/graph" },
-  { key: "about", label: "关于", href: "/About" },
+  { key: "about", label: "关于", href: "/about" },
 ]
 
 function deriveKnowledgeHubs(allFiles: QuartzComponentProps["allFiles"]): KnowledgeHub[] {

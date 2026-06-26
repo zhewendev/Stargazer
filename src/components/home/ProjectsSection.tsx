@@ -18,7 +18,7 @@ export function ProjectsSection({ allFiles }: ProjectsSectionProps) {
   if (projects.length === 0) return null
 
   return (
-    <SectionShell title="项目" moreHref="/Projects">
+    <SectionShell title="项目" moreHref="/projects">
       <div class="projects-grid">
         {projects.map((project) => {
           const href = resolveRelative("index" as FullSlug, project.slug as FullSlug)

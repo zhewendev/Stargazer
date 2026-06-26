@@ -42,7 +42,7 @@ export function NowSection({ allFiles }: NowSectionProps) {
     )
   }
   return (
-    <SectionShell title="现在在做" moreHref="/Now">
+    <SectionShell title="现在在做" moreHref="/now">
       <div class="now-grid">
         {tracks.map((track) => {
           const href = resolveRelative("index" as FullSlug, track.slug as FullSlug)
