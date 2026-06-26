@@ -1,27 +1,13 @@
 // BrandHeader — personal-brand-focused top navigation.
 //
 // Per design.md D15 (brand emphasis) and D17 (navigation contract).
-// Renders: ☰ trigger · brand lockup (logo + name + tagline) · 7 nav links · 🔍
+// Renders: ☰ trigger (tablet/mobile only) · brand lockup · 5 nav links · 🔍
 // The header does NOT render the page title (that's article-title's job).
+// All nav data comes from src/lib/navigation.ts — no local copy.
 
 import type { QuartzComponent, QuartzComponentProps } from "../../quartz/components/types"
 import { resolveRelative, FullSlug } from "../../quartz/util/path"
-
-interface NavItem {
-  key: string
-  label: string
-  href: string
-}
-
-const NAV_ITEMS: NavItem[] = [
-  { key: "home", label: "首页", href: "/" },
-  { key: "knowledge", label: "知识库", href: "/knowledge" },
-  { key: "projects", label: "项目", href: "/projects" },
-  { key: "now", label: "现在", href: "/now" },
-  { key: "resources", label: "资源", href: "/resources" },
-  { key: "graph", label: "知识图谱", href: "/graph" },
-  { key: "about", label: "关于", href: "/about" },
-]
+import { getNavItems } from "../lib/navigation"
 
 const BrandHeader: QuartzComponent = ({ cfg, fileData }: QuartzComponentProps) => {
   const brand = (cfg as any).brand ?? {}
@@ -60,9 +46,9 @@ const BrandHeader: QuartzComponent = ({ cfg, fileData }: QuartzComponentProps) =
       </div>
 
       <nav class="brand-header-nav" aria-label="主要导航">
-        {NAV_ITEMS.map((item) => (
-          <a key={item.key} class="brand-header-nav-link" href={basePath + item.href}>
-            {item.label}
+        {getNavItems().map((item) => (
+          <a key={item.id} class="brand-header-nav-link" href={basePath + item.href}>
+            {item.title}
           </a>
         ))}
       </nav>

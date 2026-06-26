@@ -79,3 +79,51 @@ export function findPageType(
 export function getPageType(name: string): PageTypeSpec | undefined {
   return pageTypeRegistry.find((spec) => spec.name === name)
 }
+
+export interface HubEntry {
+  /** Folder slug, with any trailing `/index` stripped. e.g. "Projects". */
+  folder: string
+  /** URL path derived from the folder, e.g. "/Projects". */
+  href: string
+  title: string
+  description?: string
+  /** Number of files inside the hub folder, excluding the index itself. */
+  childCount: number
+}
+
+/**
+ * Enumerate all hub pages in the site.
+ *
+ * A "hub" is any file whose `findPageType` resolves to the `hub` spec
+ * (i.e. slug ends with `/index` AND frontmatter.type === "hub"). The Drawer
+ * uses this to render Knowledge's expandable list without depending on a
+ * specific directory path prefix — adding a new `type: hub` page anywhere
+ * in `content/` will appear automatically.
+ *
+ * Callers that want a subset (e.g. exclude top-level nav items from the
+ * Knowledge drawer) filter the returned list against their own NAV_ITEMS.
+ */
+export function getHubs(
+  allFiles: QuartzPluginData[],
+  cfg?: unknown,
+): HubEntry[] {
+  const hubSpec = getPageType("hub")
+  if (!hubSpec) return []
+  return allFiles
+    .filter((f) => findPageType(f, cfg) === hubSpec)
+    .map((f) => {
+      const slug = f.slug ?? ""
+      const folder = slug.replace(/\/index$/, "")
+      const fm = (f.frontmatter ?? {}) as Record<string, unknown>
+      const childCount = allFiles.filter(
+        (other) => other.slug !== slug && other.slug.startsWith(folder + "/"),
+      ).length
+      return {
+        folder,
+        href: "/" + folder,
+        title: (fm.title as string) ?? folder,
+        description: fm.description as string | undefined,
+        childCount,
+      }
+    })
+}

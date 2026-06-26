@@ -1,76 +1,35 @@
 // DrawerNav — brand navigation drawer.
 //
 // Per design.md D13 (≠ Explorer), D14 (top-level hubs only, scales to 1000+ notes),
-// D16 (filter-first, manual navigation on selection), D17 (7 nav items, Knowledge
+// D16 (filter-first, manual navigation on selection), D17 (5 nav items, Knowledge
 // expands into hubs).
 //
 // State managed via body class `drawer-open` and a small inline script registered
 // via afterDOMLoaded. Search filters visible items; Enter navigates to focused
 // result (or first match); ESC closes; scrim click closes.
+//
+// Hub enumeration: src/lib/pageTypeRegistry.getHubs() — pageType-driven, not
+// path-driven. Adding a new `type: hub` page anywhere in `content/` makes it
+// appear in the Knowledge drawer automatically.
 
 import type { QuartzComponent, QuartzComponentProps } from "../../quartz/components/types"
-import { queryFolder } from "../lib/contentQuery"
-
-interface NavItem {
-  key: string
-  label: string
-  href: string
-  expandable?: boolean
-}
-
-interface KnowledgeHub {
-  label: string
-  href: string
-  count: number
-}
-
-const NAV_ITEMS: NavItem[] = [
-  { key: "home", label: "首页", href: "/" },
-  { key: "knowledge", label: "知识库", href: "/knowledge", expandable: true },
-  { key: "projects", label: "项目", href: "/projects" },
-  { key: "now", label: "现在", href: "/now" },
-  { key: "resources", label: "资源", href: "/resources" },
-  { key: "graph", label: "知识图谱", href: "/graph" },
-  { key: "about", label: "关于", href: "/about" },
-]
-
-function deriveKnowledgeHubs(allFiles: QuartzComponentProps["allFiles"]): KnowledgeHub[] {
-  const hubs = new Map<string, KnowledgeHub>()
-  for (const file of allFiles) {
-    const slug = (file.slug ?? "").toLowerCase()
-    if (!slug.startsWith("knowledge/")) continue
-    const rest = slug.slice("knowledge/".length)
-    const segments = rest.split("/")
-    const firstSeg = segments[0]
-    if (!firstSeg) continue
-
-    // Skip if this is the hub's own index, or any file at the
-    // knowledge/ root level (knowledge/index is a folder-level default).
-    if (segments.length < 2) continue
-    const hubIndexSlug = `knowledge/${firstSeg}/index`
-    if (slug === hubIndexSlug) continue
-
-    const existing = hubs.get(firstSeg)
-    if (existing) {
-      existing.count += 1
-    } else {
-      const hubIndex = allFiles.find((f) => f.slug === hubIndexSlug)
-      const label =
-        (hubIndex?.frontmatter?.title as string | undefined) ?? firstSeg
-      hubs.set(firstSeg, {
-        label,
-        href: `/Knowledge/${firstSeg}`,
-        count: 1,
-      })
-    }
-  }
-  return Array.from(hubs.values()).sort((a, b) =>
-    a.label.localeCompare(b.label, "zh"),
-  )
-}
+import { getNavItems } from "../lib/navigation"
+import { getHubs, type HubEntry } from "../lib/pageTypeRegistry"
 
 const DrawerNav: QuartzComponent = ({ cfg, allFiles }: QuartzComponentProps) => {
-  const hubs = deriveKnowledgeHubs(allFiles)
+  // Knowledge drawer: all hubs from the pageTypeRegistry, minus any whose
+  // folder matches a top-level nav item (Projects, Resources). Case-insensitive
+  // comparison because filesystem folder names and NAV_ITEMS href segments
+  // may differ in case. Future hubs appear automatically — no Drawer code
+  // changes needed.
+  const topLevelFolders = new Set(
+    getNavItems()
+      .map((item) => item.href.replace(/^\//, "").toLowerCase())
+      .filter((seg) => seg.length > 0),
+  )
+  const hubs: HubEntry[] = getHubs(allFiles, cfg)
+    .filter((hub) => !topLevelFolders.has(hub.folder.toLowerCase()))
+    .sort((a, b) => a.title.localeCompare(b.title, "zh"))
   const brand = (cfg as any).brand ?? {}
   const brandName = brand.name ?? cfg.pageTitle
 
@@ -116,26 +75,26 @@ const DrawerNav: QuartzComponent = ({ cfg, allFiles }: QuartzComponentProps) => 
         </div>
 
         <nav class="drawer-tree" aria-label="抽屉导航" data-drawer-tree>
-          {NAV_ITEMS.map((item) => {
-            if (item.key === "knowledge" && item.expandable) {
+          {getNavItems().map((item) => {
+            if (item.id === "knowledge" && item.expandable) {
               return (
-                <div key={item.key} class="drawer-item drawer-item-expandable" data-nav-key={item.key}>
+                <div key={item.id} class="drawer-item drawer-item-expandable" data-nav-key={item.id}>
                   <a class="drawer-item-row" href={basePath + item.href}>
-                    <span class="drawer-item-label">{item.label}</span>
+                    <span class="drawer-item-label">{item.title}</span>
                     <span class="drawer-item-count">{hubs.length}</span>
                     <span class="drawer-item-chevron" aria-hidden="true">▾</span>
                   </a>
                   {hubs.length > 0 && (
                     <ul class="drawer-item-children">
                       {hubs.map((hub) => (
-                        <li key={hub.href}>
+                        <li key={hub.folder}>
                           <a
                             class="drawer-hub-row"
                             href={basePath + hub.href}
                             data-nav-key={hub.href}
                           >
-                            <span class="drawer-hub-label">{hub.label}</span>
-                            <span class="drawer-hub-count">({hub.count})</span>
+                            <span class="drawer-hub-label">{hub.title}</span>
+                            <span class="drawer-hub-count">({hub.childCount})</span>
                           </a>
                         </li>
                       ))}
@@ -145,9 +104,9 @@ const DrawerNav: QuartzComponent = ({ cfg, allFiles }: QuartzComponentProps) => 
               )
             }
             return (
-              <div key={item.key} class="drawer-item" data-nav-key={item.key}>
+              <div key={item.id} class="drawer-item" data-nav-key={item.id}>
                 <a class="drawer-item-row" href={basePath + item.href}>
-                  <span class="drawer-item-label">{item.label}</span>
+                  <span class="drawer-item-label">{item.title}</span>
                 </a>
               </div>
             )

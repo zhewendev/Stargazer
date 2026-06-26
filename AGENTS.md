@@ -105,3 +105,18 @@ If a plugin's behavior cannot be changed via wrappers or config:
 | Plugin | File | Change | Reason | Date |
 |--------|------|--------|--------|------|
 | *(none yet — all customizations use the allowed wrapper/config/CSS approaches above)* |
+
+Every UI change must remove complexity before adding new components.
+
+# Design Guardrail
+
+Never optimize an existing component that has already been marked for removal.
+
+If a component is scheduled to disappear in a future phase:
+
+- stop polishing it
+- stop adding features
+- stop improving animations
+- only perform bug fixes
+
+Implementation effort should always be invested in the final architecture, never in transitional UI.

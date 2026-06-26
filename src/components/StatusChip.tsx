@@ -12,7 +12,7 @@ export type Status = "seed" | "growing" | "evergreen" | "complete"
 
 interface StatusChipProps {
   status: Status | string | undefined
-  size?: "sm" | "md"
+  size?: "subtle" | "sm" | "md"
 }
 
 const GLYPHS: Record<string, string> = {

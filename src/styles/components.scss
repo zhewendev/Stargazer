@@ -104,6 +104,26 @@
   background: var(--surface-elevated);
 }
 
+// Subtle variant (Phase 2 theme polish — quiet status in card contexts).
+// Lower opacity, smaller font, no padding — visual signal without weight.
+.status-chip-subtle {
+  font-size: 0.6875rem;
+  padding: 0;
+  background: transparent;
+  opacity: 0.75;
+}
+
+// Cards render chips in subtle form by default (P6: calm; P5: breathing space).
+// Components can opt back into `md` by passing size="md" explicitly.
+.card .status-chip,
+.featured-card .status-chip,
+.hub-card .status-chip {
+  font-size: 0.6875rem;
+  padding: 0;
+  background: transparent;
+  opacity: 0.75;
+}
+
 // ── Card ────────────────────────────────────────────────────────
 .card {
   display: flex;

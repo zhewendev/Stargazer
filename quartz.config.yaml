@@ -8,6 +8,7 @@ configuration:
     domain: "Android × AI × Automation"
     form: "Digital Garden"
     logo: ✦
+    motto: "Growing slowly, learning publicly."
   enableSPA: true
   enablePopovers: true
   analytics:

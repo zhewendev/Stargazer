@@ -136,6 +136,15 @@ $desktop: "(min-width: #{map.get($breakpoints, desktop)})";
   }
 }
 
+// Desktop header is a clean 3-zone layout (brand · nav · search). The
+// drawer trigger is only useful when the top-level nav is hidden, which
+// happens below the desktop breakpoint.
+.drawer-trigger {
+  @media #{$desktop} {
+    display: none;
+  }
+}
+
 // ── Drawer (D13, D14, D17) ──────────────────────────────────────
 .drawer-scrim {
   position: fixed;
@@ -335,35 +344,97 @@ $desktop: "(min-width: #{map.get($breakpoints, desktop)})";
 }
 
 // ── Brand footer ───────────────────────────────────────────────
+// 4 zones: Explore (nav) | Connect (socials) | About (↑ Top) | Motto + Credit
+// Desktop: 3-column grid for the three sections.
+// Tablet/Mobile: stack vertically, centered.
 .brand-footer {
   padding: var(--space-12) var(--space-6);
-  text-align: center;
   color: var(--text-muted);
   font-size: 0.875rem;
   border-top: 1px solid var(--surface-elevated);
   margin-top: var(--space-16);
 
-  &-socials {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--space-4);
-    margin-bottom: var(--space-4);
+  &-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-8);
+    max-width: 960px;
+    margin: 0 auto var(--space-8);
+
+    @media #{$desktop} {
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: var(--space-12);
+    }
   }
 
-  &-social-link {
+  &-section {
+    text-align: left;
+
+    @media #{$mobile} {
+      text-align: center;
+    }
+  }
+
+  &-heading {
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
     color: var(--text-muted);
+    margin: 0 0 var(--space-3);
+  }
+
+  &-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  &-link {
+    color: var(--text-primary);
     text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
     transition: color var(--motion-fast) var(--motion-easing);
 
     &:hover {
       color: var(--accent-primary);
+      text-decoration: none;
     }
   }
 
+  &-link-icon {
+    color: var(--text-muted);
+    font-size: 0.9375rem;
+    line-height: 1;
+  }
+
+  &-rule {
+    border: 0;
+    border-top: 1px solid var(--surface-elevated);
+    max-width: 960px;
+    margin: 0 auto var(--space-6);
+  }
+
+  &-motto {
+    text-align: center;
+    font-family: var(--font-display);
+    font-size: 0.9375rem;
+    color: var(--text-primary);
+    margin: 0 auto var(--space-3);
+    max-width: 960px;
+  }
+
   &-credit {
+    text-align: center;
     font-size: 0.75rem;
     opacity: 0.7;
+    margin: 0;
   }
 }
 
