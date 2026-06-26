@@ -87,13 +87,13 @@ All treated identically by query — only the **Type badge** differs visually on
 
 ### New nav (5 items)
 
-| id | label | href | expandable |
-|----|-------|------|------------|
-| knowledge | Knowledge | /knowledge | yes (hubs) |
-| topics | Topics | /projects (TODO: /topics) | yes (topic list) |
-| resources | Resources | /resources | no |
-| graph | Graph | /graph | no |
-| about | About | /about | no |
+| id        | label     | href                      | expandable       |
+| --------- | --------- | ------------------------- | ---------------- |
+| knowledge | Knowledge | /knowledge                | yes (hubs)       |
+| topics    | Topics    | /projects (TODO: /topics) | yes (topic list) |
+| resources | Resources | /resources                | no               |
+| graph     | Graph     | /graph                    | no               |
+| about     | About     | /about                    | no               |
 
 **Compatibility path:** Keep `content/Projects/` folder and `/projects` URL temporarily (AGENTS.md prohibits automatic file renames). Add explicit `// TODO(domain-migration): rename folder to Topics/ and update URL to /topics` marker. All code references switch to "Topics" vocabulary.
 
