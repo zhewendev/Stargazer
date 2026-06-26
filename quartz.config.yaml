@@ -287,7 +287,17 @@ layout:
         beforeBody: []
         left: []
         right: []
-    content: {}
+    content:
+      exclude:
+        - explorer
+        - article-title
+        - note-properties
+        - content-meta
+        - graph
+      positions:
+        left: []
+        right: [TOC, Backlinks]
+        beforeBody: [Breadcrumbs]
     home:
       positions:
         beforeBody: []
@@ -310,9 +320,12 @@ layout:
         - article-title
         - content-meta
         - reader-mode
+        - explorer
+        - note-properties
+        - graph
       positions:
         beforeBody: [Breadcrumbs]
-        left: [Explorer]
+        left: []
         right: [TOC, Backlinks]
     folder:
       exclude:
