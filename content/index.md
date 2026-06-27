@@ -7,7 +7,7 @@ type: home
 heroStyle: mountain
 sectionOrder:
   - hero
-  - now
-  - featured
-  - projects
+  - knowledge-areas
+  - latest
+  - quote
 ---

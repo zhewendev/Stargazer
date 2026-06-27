@@ -2,8 +2,7 @@
 title: 自动记账
 description: 基于 Android + AI 的自动记账应用
 icon: 记
-featured: true
-featuredType: project
+type: project
 status: growing
 ---
 

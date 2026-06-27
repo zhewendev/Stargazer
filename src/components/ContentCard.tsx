@@ -14,6 +14,12 @@ import { StatusChip } from "./StatusChip"
 interface ContentCardProps {
   page: QuartzPluginData
   fileData: QuartzPluginData
+  /** Content type badge (e.g. "Article", "Project", "Note"). */
+  type?: string
+}
+
+function safeSlug(slug: unknown): FullSlug {
+  return (typeof slug === "string" ? slug : "") as FullSlug
 }
 
 function displayTitle(page: QuartzPluginData): string {
@@ -24,42 +30,46 @@ function displayTitle(page: QuartzPluginData): string {
   return base
 }
 
-export function ContentCard({ page, fileData }: ContentCardProps) {
-  const href = resolveRelative(
-    (fileData.slug as FullSlug) ?? ("" as FullSlug),
-    page.slug as FullSlug,
-  )
+/** Memoized future slots — never changes between renders. */
+const FUTURE_SLOTS = [
+  { key: "backlinks", label: "反链" },
+  { key: "wikilinks", label: "链出" },
+] as const
+
+export function ContentCard({ page, fileData, type }: ContentCardProps) {
+  const href = resolveRelative(safeSlug(fileData.slug), safeSlug(page.slug))
   const title = displayTitle(page)
   const status = page.frontmatter?.status as string | undefined
   const description = (page.frontmatter?.description as string | undefined) ?? ""
-  const tags = (page.frontmatter?.tags ?? []) as string[]
+  const rawTags = page.frontmatter?.tags
+  const tags: string[] = Array.isArray(rawTags) ? rawTags.filter((t): t is string => typeof t === "string") : []
   const date = page.dates?.modified
+  const typeLabel = type ?? (page.frontmatter?.type as string | undefined)
 
   // D35: future graph metadata slots (backlinks, wikilinks count, related).
   // Reserved as data-attributes so P11 can populate them without touching
   // the card layout. Empty slots are still rendered so the footer height
   // is consistent across cards (D32).
-  const futureSlots = [
-    { key: "backlinks", label: "反链", count: undefined as number | undefined },
-    { key: "wikilinks", label: "链出", count: undefined as number | undefined },
-  ]
+
+  const isoDate = date?.toISOString()
 
   return (
     <article
       class="content-card"
       data-status={status ?? "none"}
       data-featured={page.frontmatter?.featured ? "true" : "false"}
-      data-featured-order={page.frontmatter?.featuredOrder ?? ""}
+      data-featured-order={String(page.frontmatter?.featuredOrder ?? "")}
     >
       <a class="content-card-link" href={href}>
         {/* D30 hierarchy: Status → Title → Description → Tags → Date */}
         <div class="content-card-meta-top">
           {status && <StatusChip status={status} />}
+          {typeLabel && (
+            <span class="content-card-type">{typeLabel}</span>
+          )}
           {/* Reserved for future curated marker (e.g., "精选") */}
           {page.frontmatter?.featured && (
-            <span class="content-card-featured" aria-label="精选">
-              ★
-            </span>
+            <span class="content-card-featured" aria-hidden="true">★</span>
           )}
         </div>
 
@@ -83,18 +93,18 @@ export function ContentCard({ page, fileData }: ContentCardProps) {
         )}
 
         <div class="content-card-footer">
-          {date && (
-            <time class="content-card-date" dateTime={date.toISOString()}>
-              {date.toISOString().slice(0, 10)}
+          {isoDate && (
+            <time class="content-card-date" dateTime={isoDate}>
+              {isoDate.slice(0, 10)}
             </time>
           )}
           {/* D35 reserved space for graph signals — keeps footer height consistent */}
           <div
             class="content-card-graph-meta"
             aria-hidden="true"
-            data-slots={futureSlots.map((s) => s.key).join(",")}
+            data-slots={FUTURE_SLOTS.map((s) => s.key).join(",")}
           >
-            {futureSlots.map((slot) => (
+            {FUTURE_SLOTS.map((slot) => (
               <span
                 key={slot.key}
                 class={`content-card-slot content-card-slot-${slot.key}`}

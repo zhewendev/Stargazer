@@ -731,8 +731,13 @@ export async function loadQuartzLayout(layoutOverrides?: {
   // Replaces the default Quartz community footer plugin.
   const BrandFooterMod = await import("../../../src/components/BrandFooter")
   const BrandFooterCtor = BrandFooterMod.default
-  const brandFooter = BrandFooterCtor()
-  defaultLayout.footer = brandFooter
+  if (typeof BrandFooterCtor !== "function") {
+    console.warn("[Stargazer] BrandFooter default export is not a function")
+  }
+  const brandFooter = typeof BrandFooterCtor === "function" ? BrandFooterCtor() : undefined
+  if (brandFooter) {
+    defaultLayout.footer = brandFooter
+  }
 
   // ── Stargazer: inject BrandHeader + DrawerNav into every pageType ──
   // Per design.md D13/D15/D17: BrandHeader (logo + 7 nav links) + DrawerNav
@@ -742,31 +747,80 @@ export async function loadQuartzLayout(layoutOverrides?: {
   const DrawerNavMod = await import("../../../src/components/DrawerNav")
   const BrandHeaderCtor = BrandHeaderMod.default
   const DrawerNavCtor = DrawerNavMod.default
+  if (typeof BrandHeaderCtor !== "function") {
+    console.warn("[Stargazer] BrandHeader default export is not a function")
+  }
+  if (typeof DrawerNavCtor !== "function") {
+    console.warn("[Stargazer] DrawerNav default export is not a function")
+  }
   const builtinHeaderComponents = [
-    BrandHeaderCtor(),
-    DrawerNavCtor(),
-  ]
+    typeof BrandHeaderCtor === "function" ? BrandHeaderCtor() : null,
+    typeof DrawerNavCtor === "function" ? DrawerNavCtor() : null,
+  ].filter(Boolean)
   defaultLayout.header = [...defaultLayout.header, ...builtinHeaderComponents]
 
   // ── Stargazer: inject ArticleMeta + MetadataPanel into content pageType ──
   // Per design.md D18: status chip surfaces (note header + metadata panel).
   // ArticleMeta replaces Quartz's default content-meta for content pages.
   // MetadataPanel sits in the right slot alongside TOC and Backlinks.
-  const ArticleMetaMod = await import("../../../src/components/ArticleMeta")
-  const MetadataPanelMod = await import("../../../src/components/MetadataPanel")
-  const ArticleMetaCtor = ArticleMetaMod.default
-  const MetadataPanelCtor = MetadataPanelMod.default
+  let ArticleMetaCtor: QuartzComponentConstructor | undefined
+  let MetadataPanelCtor: QuartzComponentConstructor | undefined
+  let ArticleMiniGraphCtor: QuartzComponentConstructor | undefined
+  let ArticlePrevNextCtor: QuartzComponentConstructor | undefined
+  try {
+    const ArticleMetaMod = await import("../../../src/components/ArticleMeta")
+    const MetadataPanelMod = await import("../../../src/components/MetadataPanel")
+    const ArticleMiniGraphMod = await import("../../../src/components/ArticleMiniGraph")
+    const ArticlePrevNextMod = await import("../../../src/components/ArticlePrevNext")
+    ArticleMetaCtor = ArticleMetaMod.default
+    MetadataPanelCtor = MetadataPanelMod.default
+    ArticleMiniGraphCtor = ArticleMiniGraphMod.default
+    ArticlePrevNextCtor = ArticlePrevNextMod.default
+  } catch (e) {
+    console.warn("[Stargazer] Failed to load article components:", e)
+  }
   const contentPageType = byPageType["content"]
   if (contentPageType) {
-    contentPageType.beforeBody = [
-      ArticleMetaCtor(),
-      ...(contentPageType.beforeBody ?? []).filter(
-        (c) => !isContentMetaComponent(c),
-      ),
-    ]
-    contentPageType.right = [
-      ...(contentPageType.right ?? []),
-      MetadataPanelCtor(),
+    if (ArticleMetaCtor) {
+      contentPageType.beforeBody = [
+        ArticleMetaCtor(),
+        ...(contentPageType.beforeBody ?? []).filter(
+          (c) => !isContentMetaComponent(c),
+        ),
+      ]
+    }
+    if (MetadataPanelCtor || ArticleMiniGraphCtor) {
+      contentPageType.right = [
+        ...(contentPageType.right ?? []),
+        ...(MetadataPanelCtor ? [MetadataPanelCtor()] : []),
+        ...(ArticleMiniGraphCtor ? [ArticleMiniGraphCtor()] : []),
+      ]
+    }
+    if (ArticlePrevNextCtor) {
+      contentPageType.afterBody = [
+        ...(contentPageType.afterBody ?? []),
+        ArticlePrevNextCtor(),
+      ]
+    }
+  }
+
+  // ── Stargazer: inject AboutPrinciples + QuickLinksGrid into about pageType ──
+  let AboutPrinciplesCtor: QuartzComponentConstructor | undefined
+  let QuickLinksGridCtor: QuartzComponentConstructor | undefined
+  try {
+    const AboutPrinciplesMod = await import("../../../src/components/AboutPrinciples")
+    const QuickLinksGridMod = await import("../../../src/components/QuickLinksGrid")
+    AboutPrinciplesCtor = AboutPrinciplesMod.default
+    QuickLinksGridCtor = QuickLinksGridMod.default
+  } catch (e) {
+    console.warn("[Stargazer] Failed to load about components:", e)
+  }
+  const aboutPageType = byPageType["about"]
+  if (aboutPageType) {
+    aboutPageType.beforeBody = [
+      ...(aboutPageType.beforeBody ?? []),
+      ...(AboutPrinciplesCtor ? [AboutPrinciplesCtor()] : []),
+      ...(QuickLinksGridCtor ? [QuickLinksGridCtor()] : []),
     ]
   }
 

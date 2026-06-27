@@ -1,7 +1,7 @@
 // BrandHeader — personal-brand-focused top navigation.
 //
 // Per design.md D15 (brand emphasis) and D17 (navigation contract).
-// Renders: ☰ trigger (tablet/mobile only) · brand lockup · 5 nav links · 🔍
+// Renders: ☰ trigger (tablet/mobile only) · brand lockup · 5 nav links · 🔎
 // The header does NOT render the page title (that's article-title's job).
 // All nav data comes from src/lib/navigation.ts — no local copy.
 
@@ -59,7 +59,7 @@ const BrandHeader: QuartzComponent = ({ cfg, fileData }: QuartzComponentProps) =
           class="search-trigger"
           aria-label="搜索"
         >
-          🔍
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         </button>
       </div>
     </header>

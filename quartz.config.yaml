@@ -9,6 +9,8 @@ configuration:
     form: "Digital Garden"
     logo: ✦
     motto: "Growing slowly, learning publicly."
+    quote: "知识只有在连接中，才能真正产生价值。"
+    lastUpdated: "2026-06-27"
   enableSPA: true
   enablePopovers: true
   analytics:
@@ -328,6 +330,44 @@ layout:
         beforeBody: [Breadcrumbs]
         left: []
         right: [TOC, Backlinks]
+    topic:
+      exclude:
+        - article-title
+        - content-meta
+        - reader-mode
+        - explorer
+        - note-properties
+        - graph
+      positions:
+        beforeBody: [Breadcrumbs]
+        left: []
+        right: [TOC, Backlinks]
+    resource:
+      exclude:
+        - article-title
+        - content-meta
+        - reader-mode
+        - explorer
+        - note-properties
+        - graph
+      positions:
+        beforeBody: [Breadcrumbs]
+        left: []
+        right: []
+    about:
+      exclude:
+        - article-title
+        - content-meta
+        - reader-mode
+        - explorer
+        - note-properties
+        - graph
+        - toc
+        - backlinks
+      positions:
+        beforeBody: []
+        left: []
+        right: []
     folder:
       exclude:
         - reader-mode

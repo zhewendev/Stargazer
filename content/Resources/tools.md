@@ -2,6 +2,7 @@
 title: 工具集
 description: 常用开发工具、效率工具与环境配置
 tags: [tools]
+resource-type: tool
 status: seed
 ---
 

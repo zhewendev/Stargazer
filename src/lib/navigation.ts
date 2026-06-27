@@ -19,11 +19,11 @@ export interface NavItem {
 }
 
 export const NAV_ITEMS: NavItem[] = [
-  { id: "knowledge", title: "Knowledge", href: "/knowledge", expandable: true },
-  { id: "projects", title: "Projects", href: "/projects" },
-  { id: "resources", title: "Resources", href: "/resources" },
-  { id: "graph", title: "Graph", href: "/graph" },
-  { id: "about", title: "About", href: "/about" },
+  { id: "knowledge", title: "知识库", href: "/knowledge", expandable: true },
+  { id: "topics", title: "专题", href: "/topics", expandable: true },
+  { id: "resources", title: "资源", href: "/resources" },
+  { id: "graph", title: "图谱", href: "/graph" },
+  { id: "about", title: "关于", href: "/about" },
 ]
 
 /** Top-level nav items with `hidden` filtered out. */

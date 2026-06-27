@@ -14,11 +14,11 @@
 
 import type { QuartzComponent, QuartzComponentProps } from "../../quartz/components/types"
 import { getNavItems } from "../lib/navigation"
-import { getHubs, type HubEntry } from "../lib/pageTypeRegistry"
+import { getHubs, getTopics, type HubEntry } from "../lib/pageTypeRegistry"
 
 const DrawerNav: QuartzComponent = ({ cfg, allFiles }: QuartzComponentProps) => {
   // Knowledge drawer: all hubs from the pageTypeRegistry, minus any whose
-  // folder matches a top-level nav item (Projects, Resources). Case-insensitive
+  // folder matches a top-level nav item (Topics, Resources). Case-insensitive
   // comparison because filesystem folder names and NAV_ITEMS href segments
   // may differ in case. Future hubs appear automatically — no Drawer code
   // changes needed.
@@ -29,6 +29,10 @@ const DrawerNav: QuartzComponent = ({ cfg, allFiles }: QuartzComponentProps) => 
   )
   const hubs: HubEntry[] = getHubs(allFiles, cfg)
     .filter((hub) => !topLevelFolders.has(hub.folder.toLowerCase()))
+    .sort((a, b) => a.title.localeCompare(b.title, "zh"))
+
+  // Topics drawer: all topic pages from the pageTypeRegistry
+  const topics: HubEntry[] = getTopics(allFiles, cfg)
     .sort((a, b) => a.title.localeCompare(b.title, "zh"))
   const brand = (cfg as any).brand ?? {}
   const brandName = brand.name ?? cfg.pageTitle
@@ -95,6 +99,33 @@ const DrawerNav: QuartzComponent = ({ cfg, allFiles }: QuartzComponentProps) => 
                           >
                             <span class="drawer-hub-label">{hub.title}</span>
                             <span class="drawer-hub-count">({hub.childCount})</span>
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              )
+            }
+            if (item.id === "topics" && item.expandable) {
+              return (
+                <div key={item.id} class="drawer-item drawer-item-expandable" data-nav-key={item.id}>
+                  <a class="drawer-item-row" href={basePath + item.href}>
+                    <span class="drawer-item-label">{item.title}</span>
+                    <span class="drawer-item-count">{topics.length}</span>
+                    <span class="drawer-item-chevron" aria-hidden="true">▾</span>
+                  </a>
+                  {topics.length > 0 && (
+                    <ul class="drawer-item-children">
+                      {topics.map((topic) => (
+                        <li key={topic.folder}>
+                          <a
+                            class="drawer-hub-row"
+                            href={basePath + topic.href}
+                            data-nav-key={topic.href}
+                          >
+                            <span class="drawer-hub-label">{topic.title}</span>
+                            <span class="drawer-hub-count">({topic.childCount})</span>
                           </a>
                         </li>
                       ))}

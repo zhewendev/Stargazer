@@ -35,7 +35,7 @@
   color: var(--surface-canvas);
 
   &:hover {
-    background: color.adjust(#c9a97e, $lightness: -6%);
+    background: color-mix(in srgb, var(--accent-primary) 90%, black);
     text-decoration: none;
   }
 }
@@ -63,16 +63,6 @@
   color: var(--text-muted);
   font-size: 0.8125rem;
   font-weight: 500;
-}
-
-.chip-glyph {
-  font-size: 1em;
-  line-height: 1;
-  // Glyph itself carries the color (not a dot fill), per D19.
-}
-
-.chip-label {
-  // Label inherits chip color.
 }
 
 // ── StatusChip variants (D19: color + glyph shape) ─────────────
@@ -187,22 +177,6 @@
   list-style: none;
   padding-left: var(--space-6);
   margin: 0;
-}
-
-// ── Scrim (drawer overlay) ──────────────────────────────────────
-.scrim {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.4);
-  z-index: 999;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity var(--motion-base) var(--motion-easing);
-
-  &.is-open {
-    opacity: 1;
-    pointer-events: auto;
-  }
 }
 
 // ── Article meta (note header strip, D18) ──────────────────────
@@ -331,31 +305,6 @@
   }
 }
 
-// ── Featured cards (D20: visually distinct variants) ───────────
-.featured-card-article {
-  // Default .card style already gives vertical cover-on-top layout.
-}
-
-.featured-card-project {
-  flex-direction: row;
-  align-items: flex-start;
-  text-align: left;
-  gap: var(--space-4);
-
-  .project-card-body {
-    flex: 1;
-    min-width: 0;
-  }
-}
-
-.featured-card-note {
-  padding: var(--space-4);
-}
-
-.hub-card {
-  // Same as featured-card-article for now; HubCards uses different title size (h4).
-}
-
 // ── Scoped graph (Hub section, P11) ─────────────────────────────
 .scoped-graph-container {
   position: relative;
@@ -415,6 +364,8 @@
 
 // ── Focus-visible ring for all interactive elements (12.3) ──────
 // Consistent 2px accent outline on keyboard focus, no ring on mouse click.
+// Global rule covers <a>, <button>, [tabindex]. Component rules below
+// only add non-standard behavior (different color, extra properties).
 
 a:focus-visible,
 button:focus-visible,
@@ -423,44 +374,26 @@ button:focus-visible,
   outline-offset: 2px;
 }
 
-// Card links (now-card, project-card are <a> tags)
-.now-card:focus-visible,
-.project-card:focus-visible {
-  outline: 2px solid var(--accent-primary);
-  outline-offset: 2px;
+// Card links: suppress text-decoration on focus
+.now-card:focus-visible {
   text-decoration: none;
 }
 
-// Hub list links
+// Hub list links + section shell: add border-radius to focus ring
 .hub-list-link:focus-visible,
-.hub-compact-link:focus-visible {
-  outline: 2px solid var(--accent-primary);
-  outline-offset: 2px;
-  border-radius: var(--radius-sm);
-}
-
-// Section shell "更多 →" links
-.section-shell-more:focus-visible {
-  outline: 2px solid var(--accent-primary);
-  outline-offset: 2px;
-  border-radius: var(--radius-sm);
-}
-
-// Brand footer social links
+.hub-compact-link:focus-visible,
+.section-shell-more:focus-visible,
 .brand-footer-social-link:focus-visible {
-  outline: 2px solid var(--accent-primary);
-  outline-offset: 2px;
   border-radius: var(--radius-sm);
 }
 
-// Tag links in article meta and metadata panel
+// Tag links: tighter outline offset
 .article-meta-tag:focus-visible,
 .metadata-panel-tag:focus-visible {
-  outline: 2px solid var(--accent-primary);
   outline-offset: 1px;
 }
 
-// Tree node rows in drawer
+// Tree node rows in drawer: use drawer accent color
 .tree-node-row:focus-visible {
   outline: 2px solid var(--drawer-accent);
   outline-offset: 1px;
@@ -468,6 +401,297 @@ button:focus-visible,
 
 // Card that is a direct <a> wrapper
 a.card:focus-visible {
-  outline: 2px solid var(--accent-primary);
-  outline-offset: 2px;
+  border-radius: var(--radius-md);
+}
+
+// ── Article mini graph (right sidebar) ───────────────────────
+.article-mini-graph {
+  margin-top: var(--space-4);
+
+  &-title {
+    font-family: var(--font-display);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin: 0 0 var(--space-3);
+  }
+}
+
+// ── Article prev/next navigation ─────────────────────────────
+.article-prev-next {
+  display: flex;
+  gap: var(--space-4);
+  padding: var(--space-8) 0;
+  border-top: 1px solid var(--surface-elevated);
+  margin-top: var(--space-8);
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+  }
+
+  &-link {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    padding: var(--space-4);
+    background: var(--surface-elevated);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    color: inherit;
+    transition: box-shadow var(--motion-fast) var(--motion-easing);
+
+    &:hover {
+      box-shadow: var(--shadow-soft);
+      text-decoration: none;
+    }
+  }
+
+  &-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  &-title {
+    font-family: var(--font-display);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--text-primary);
+  }
+}
+
+.article-next {
+  text-align: right;
+}
+
+// ── About principles ─────────────────────────────────────────
+.about-principles {
+  margin-bottom: var(--space-8);
+
+  &-title {
+    font-family: var(--font-display);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin: 0 0 var(--space-4);
+  }
+
+  &-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-4);
+
+    @media (min-width: 700px) {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+}
+
+.about-principle-card {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-4);
+  background: var(--surface-elevated);
+  border-radius: var(--radius-md);
+}
+
+.about-principle-icon {
+  font-size: 1.25rem;
+  color: var(--accent-primary);
+  margin-bottom: var(--space-2);
+}
+
+.about-principle-name {
+  font-family: var(--font-display);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  margin: 0 0 var(--space-1);
+}
+
+.about-principle-stage {
+  font-size: 0.6875rem;
+  color: var(--text-muted);
+  margin-bottom: var(--space-2);
+}
+
+.about-principle-desc {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  margin: 0;
+  line-height: 1.5;
+}
+
+// ── About quick links ────────────────────────────────────────
+.about-quick-links {
+  margin-bottom: var(--space-8);
+
+  &-title {
+    font-family: var(--font-display);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin: 0 0 var(--space-4);
+  }
+
+  &-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-6);
+
+    @media (min-width: 700px) {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+}
+
+.about-quick-links-category {
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin: 0 0 var(--space-3);
+}
+
+.about-quick-links-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.about-quick-links-link {
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  text-decoration: none;
+
+  &:hover {
+    color: var(--accent-primary);
+    text-decoration: none;
+  }
+}
+
+// ── ContentCard (D30–D35) ─────────────────────────────────────
+.content-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-elevated);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-flat);
+  transition: box-shadow var(--motion-fast) var(--motion-easing), transform var(--motion-fast) var(--motion-easing);
+
+  &:hover {
+    box-shadow: var(--shadow-soft);
+    transform: translateY(-2px);
+  }
+}
+
+.content-card-link {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: var(--space-4);
+  text-decoration: none;
+  color: inherit;
+
+  @media (min-width: 700px) {
+    padding: var(--space-6);
+  }
+}
+
+.content-card-meta-top {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+
+.content-card-type {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--accent-primary);
+  background: var(--surface-canvas);
+  padding: 0.125rem var(--space-2);
+  border-radius: var(--radius-sm);
+}
+
+.content-card-featured {
+  font-size: 0.75rem;
+  color: var(--accent-primary);
+  line-height: 1;
+}
+
+.content-card-title {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 var(--space-2);
+  line-height: 1.35;
+}
+
+.content-card-desc {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  margin: 0 0 var(--space-3);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.content-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  margin-bottom: var(--space-3);
+}
+
+.content-card-tag {
+  font-size: 0.6875rem;
+  color: var(--text-muted);
+  background: var(--surface-canvas);
+  padding: 0.125rem var(--space-2);
+  border-radius: var(--radius-sm);
+}
+
+.content-card-tag-more {
+  font-size: 0.6875rem;
+  color: var(--text-muted);
+  opacity: 0.6;
+}
+
+.content-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: var(--space-3);
+}
+
+.content-card-date {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.content-card-graph-meta {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.content-card-slot {
+  display: none;
+  font-size: 0.6875rem;
+  color: var(--text-muted);
 }

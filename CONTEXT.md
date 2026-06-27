@@ -42,12 +42,17 @@
 2. Add Topic Hub concept
 3. Redesign Home: Hero + Knowledge Areas + Latest Essays + Quote (drop Now, Featured, Projects)
 4. Drawer: two expandable sections (Knowledge ▾ + Topics ▾)
-5. Footer Explore: replace "Projects" with "Topics"
+5. Footer: 4-column layout (探索/花园/联系/更多) replacing Projects with Topics
 6. Metadata: Topic is primary, Project is a Type
 7. Card: one `ContentCard` with Type badge (no more Article/Project/Note variants)
-8. ContentQuery: `queryByTopic`, `queryKnowledge`, `queryResources`, `queryFeatured`, `queryRecent` (no more `queryFolder("projects")`)
+8. ContentQuery: `queryByTopic`, `queryKnowledge`, `queryResources`, `queryFeatured`, `queryRecent`, `getHubStats` (no more `queryFolder("projects")`)
 9. PageType: add `topic`, `resource`, `about`; remove `featuredType: project` from FeaturedType union
 10. Folder: keep `content/Projects/` for now (AGENTS.md no-rename) + add TODO marker
+
+**Plus enhanced page layouts:**
+- Knowledge Hub: stats row + core topics grid + tabs
+- Topic: 3-tab layout (概览/核心文章/相关资源)
+- Resource: filter tabs + two-column layout
 
 **8 implementation phases** (each stops with build + typecheck + screenshots + Remaining Issues):
 - 2.1 PageType registry: add topic/resource/about specs + enumerators
@@ -82,10 +87,23 @@
 
 ## Open questions for the user (Priority 2)
 
-1. Approve the 8-phase plan as-is, or reorder / skip phases?
-2. Specifically: confirm Home redesign removes Now, Featured, Projects sections entirely (per spec)?
-3. Confirm footer Explore replaces "Projects" with "Topics" (nav label changes but URL stays `/projects`)?
-4. Confirm Drawer gets TWO expandable sections (Knowledge ▾ + Topics ▾) instead of one?
+1. ~~Approve the 8-phase plan as-is, or reorder / skip phases?~~ ✅ Approved
+2. ~~Specifically: confirm Home redesign removes Now, Featured, Projects sections entirely (per spec)?~~ ✅ Confirmed
+3. ~~Confirm footer Explore replaces "Projects" with "Topics" (nav label changes but URL stays `/projects`)?~~ ✅ Confirmed
+4. ~~Confirm Drawer gets TWO expandable sections (Knowledge ▾ + Topics ▾) instead of one?~~ ✅ Confirmed
+
+## Design decisions (confirmed)
+
+| Page | Decision |
+|------|----------|
+| **Home** | Follow plan — no "探索知识领域" cards, just Hero + Knowledge Areas + Latest Essays + Quote |
+| **Knowledge Hub** | Enhanced per design — stats row (auto-computed) + core topics grid + tabs (学习路径 deferred) |
+| **Topic** | Per design — tabs: 概览 / 核心文章 / 相关资源. **No 学习路径** (removed per user) |
+| **Article** | Follow plan for now, optimize later |
+| **Resource** | Per design — filter tabs (全部/书籍/工具/网站/论文/视频) + two-column layout |
+| **Graph** | Follow plan |
+| **About** | Follow plan |
+| **Footer** | Per design — 4 columns: 探索 / 花园 (titles only) / 联系 / 关于 |
 
 ## Verification artifacts
 

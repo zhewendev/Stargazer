@@ -2,6 +2,7 @@
 title: 优质链接
 description: 值得收藏的文章、教程与资源链接
 tags: [links]
+resource-type: website
 status: seed
 ---
 

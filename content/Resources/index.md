@@ -1,22 +1,10 @@
 ---
-title: 资源
-description: 书单 · 工具集 · 优质链接
-type: hub
+title: 资源库
+description: 精选书籍、工具、网站、论文、视频等学习资源
+type: resource
 heroStyle: mountain
 sections:
-  - title: 书单
-    type: list
-    filter:
-      tags: [books]
-    limit: 10
-  - title: 工具
-    type: list
-    filter:
-      tags: [tools]
-    limit: 10
-  - title: 链接
-    type: list
-    filter:
-      tags: [links]
-    limit: 10
+  - title: 所有资源
+    type: compact-list
+    filter: {}
 ---

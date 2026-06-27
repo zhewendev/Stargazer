@@ -2,8 +2,7 @@
 title: AI Workflow
 description: 沉淀常用的 AI 工作流与模板
 icon: 🤖
-featured: true
-featuredType: project
+type: project
 status: evergreen
 ---
 

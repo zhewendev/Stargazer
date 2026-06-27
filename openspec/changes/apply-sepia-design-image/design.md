@@ -105,23 +105,21 @@
 
 **Rationale:** The hero mountain and footer mountain are the same composition at different scales. Adding variants adds maintenance cost without visual benefit. If future variants are needed, the registry pattern (D26) supports drop-in addition.
 
-### 6. Topic and Resources pages — Hub DSL extensions, not new pageTypes
+### 6. Topic and Resources pages — standalone components (revised from Hub DSL)
 
-**Decision:** Fold Topic and Resources into the existing `hub` pageType. Add two new section types to the Hub DSL: `timeline` (renders `LearningTimeline`) and `related-topics` (renders `RelatedTopics`).
+**Decision (revised):** Topic and Resources are implemented as standalone components (`TopicPage.tsx`, `ResourcePage.tsx`) registered as separate pageTypes in `pageTypeRegistry.ts`, NOT as Hub DSL extensions.
 
-**Rationale:** Topic and Resources are conceptually folders with declarative sections — exactly what Hub already does. Adding pageTypes duplicates infrastructure. Hub DSL is the right extension point.
+**Rationale:** Simpler implementation. Topic has 3-tab layout with JS filtering. Resource has filter tabs + sidebar. Both have distinct UI patterns that don't fit neatly into Hub's section DSL. Standalone components are easier to maintain and evolve independently.
 
-**Alternatives considered:**
-- New `topic` and `resources` pageTypes → rejected: over-engineering
-- Force Topic/Resources into existing `cards`/`list` sections → rejected: timeline + related-topics are distinct visualizations
+**Original plan:** Fold into Hub DSL with `timeline` and `related-topics` section types. **Revised:** Standalone pageTypes with dedicated components.
 
-### 7. Footer — full rewrite to 4-column
+### 7. Footer — enhanced in place (revised from full rewrite)
 
-**Decision:** Replace `BrandFooter.tsx` with a 4-column layout: 探索 / 花园 / 联系 / 关于. Mountain motif in a corner. Brand credit in footer-bottom.
+**Decision (revised):** Enhance `BrandFooter.tsx` in place with 4-column grid layout. NOT replaced with `SiteFooter.tsx`.
 
-**Rationale:** Design image shows 4-column footer; current footer is single-row. Mountain motif is a new design element. Reuse `Mountain.tsx` SVG.
+**Rationale:** Same 4-column result (探索/花园/联系/关于) with less churn. Mountain motif and Back to Top deferred — mountain only works with full-width footer (user confirmed), Back to Top is a future addition.
 
-**Pattern:** New `SiteFooter.tsx` replaces `BrandFooter.tsx`; component name change in `quartz.config.yaml`.
+**Original plan:** Create `SiteFooter.tsx`, delete `BrandFooter.tsx`. **Revised:** Enhance existing `BrandFooter.tsx`.
 
 ### 8. Article sidebar — compose, don't replace
 

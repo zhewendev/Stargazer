@@ -14,7 +14,7 @@
 
 import type { QuartzPluginData } from "../../quartz/plugins/vfile"
 
-export type FeaturedType = "article" | "project" | "note"
+export type FeaturedType = "article" | "note"
 
 export interface SectionFilter {
   tags?: string[]
@@ -137,4 +137,122 @@ export function queryFolder(
   limit?: number,
 ): QuartzPluginData[] {
   return querySection(allFiles, {}, { hubScope: folderSlug, limit })
+}
+
+// ============================================================================
+// New query functions (Priority 2.2)
+// ============================================================================
+
+/** All files in a topic's scope (excludes the topic's own index.md). */
+export function queryByTopic(
+  allFiles: QuartzPluginData[],
+  topicSlug: string,
+  limit?: number,
+): QuartzPluginData[] {
+  return querySection(allFiles, {}, { hubScope: topicSlug, limit })
+}
+
+/** All files under any Knowledge/ hub. */
+export function queryKnowledge(
+  allFiles: QuartzPluginData[],
+  limit?: number,
+): QuartzPluginData[] {
+  const knowledgeFiles = allFiles.filter((f) => {
+    const slug = f.slug ?? ""
+    return slug.startsWith("Knowledge/") && !slug.endsWith("/index")
+  })
+  const sorted = [...knowledgeFiles].sort(DEFAULT_SORT)
+  return limit ? sorted.slice(0, limit) : sorted
+}
+
+/** All files under any Resources/ hub. */
+export function queryResources(
+  allFiles: QuartzPluginData[],
+  limit?: number,
+): QuartzPluginData[] {
+  const resourceFiles = allFiles.filter((f) => {
+    const slug = f.slug ?? ""
+    return slug.startsWith("Resources/") && !slug.endsWith("/index")
+  })
+  const sorted = [...resourceFiles].sort(DEFAULT_SORT)
+  return limit ? sorted.slice(0, limit) : sorted
+}
+
+/** All `featured: true` files, sorted by `featuredOrder`. */
+export function queryFeatured(
+  allFiles: QuartzPluginData[],
+  limit?: number,
+): QuartzPluginData[] {
+  return querySection(allFiles, { featured: true }, { sort: sortByFeaturedOrder, limit })
+}
+
+/** Recent files, sorted by modified date descending. */
+export function queryRecent(
+  allFiles: QuartzPluginData[],
+  limit?: number,
+): QuartzPluginData[] {
+  const sorted = [...allFiles].sort(DEFAULT_SORT)
+  return limit ? sorted.slice(0, limit) : sorted
+}
+
+/** Resources filtered by `resource-type` frontmatter field. */
+export function queryResourceByType(
+  allFiles: QuartzPluginData[],
+  resourceType?: string,
+  limit?: number,
+): QuartzPluginData[] {
+  let results = allFiles.filter((f) => {
+    const slug = f.slug ?? ""
+    if (!slug.startsWith("Resources/") || slug.endsWith("/index")) return false
+    if (resourceType) {
+      const rt = (f.frontmatter?.["resource-type"] ?? "") as string
+      return rt === resourceType
+    }
+    return true
+  })
+  const sorted = [...results].sort(DEFAULT_SORT)
+  return limit ? sorted.slice(0, limit) : sorted
+}
+
+// ============================================================================
+// Hub/Topic ownership helper
+// ============================================================================
+
+/**
+ * Find the nearest enclosing hub or topic that owns a given file.
+ *
+ * Returns the slug of the closest parent hub/topic (e.g. "Knowledge/Android"
+ * or "Projects/ai-workflow"), or undefined if the file is top-level or not
+ * inside any hub/topic scope.
+ *
+ * Computation is O(hubs × files) — acceptable for current scale (~24 files).
+ */
+export function getOwningHub(
+  file: QuartzPluginData,
+  allFiles: QuartzPluginData[],
+): string | undefined {
+  const slug = file.slug ?? ""
+  // Collect all hub/topic index slugs (e.g. "Knowledge/Android/index", "Projects/index")
+  const hubSlugs = allFiles
+    .filter((f) => {
+      const s = f.slug ?? ""
+      const fm = (f.frontmatter ?? {}) as Record<string, unknown>
+      return (
+        s.endsWith("/index") &&
+        (fm.type === "hub" || fm.type === "topic" || fm.type === "resource")
+      )
+    })
+    .map((f) => f.slug ?? "")
+
+  // Find the longest matching hub scope (most specific)
+  let best: string | undefined
+  for (const hubSlug of hubSlugs) {
+    const folder = hubSlug.replace(/\/index$/, "")
+    if (slug.startsWith(folder + "/") && slug !== hubSlug) {
+      if (!best || folder.length > best.length) {
+        best = folder
+      }
+    }
+  }
+  return best
 }

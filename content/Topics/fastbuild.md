@@ -2,8 +2,7 @@
 title: FastBuild
 description: Android 高效构建插件
 icon: ⚡
-featured: true
-featuredType: project
+type: project
 status: evergreen
 ---
 

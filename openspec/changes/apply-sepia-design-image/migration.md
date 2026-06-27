@@ -53,13 +53,15 @@
 
 ## Zone 3: Topic Page (Frame 03)
 
+**Implementation note:** Originally planned as Hub DSL extension. Implemented as standalone `TopicPage.tsx` pageType.
+
 | Design element | Decision | Existing target | Action |
 |---|---|---|---|
-| Page layout (topic hero + learning path + core articles + related topics) | **M** | `Hub.tsx` (declarative sections DSL) | Add two new section types: `timeline` and `related-topics` |
-| Topic hero (h1 + description + 3 counters: 笔记/工具/案例) | **M** | `hub/HubHero.tsx` | Already has hero; refine to 3 counters |
-| Learning path timeline (smaller variant) | **N** | — | Same `LearningTimeline` component, smaller variant |
-| Core articles list with status | **M** | `hub/sections.tsx` ListSection | Reuse, refine card design |
-| Related topics section | **N** | — | New `RelatedTopics` section type |
+| Page layout (topic hero + learning path + core articles + related topics) | **N** | `TopicPage.tsx` (standalone) | 3-tab layout: 概览 / 核心文章 / 相关资源 (学习路径 removed per user) |
+| Topic hero (h1 + description) | **N** | `TopicPage.tsx` | Renders title + description from frontmatter |
+| Core articles grid with ContentCards | **N** | `TopicPage.tsx` + `ContentCard.tsx` | Uses `queryByTopic()` to find child articles |
+| Related resources (external links) | **N** | `TopicPage.tsx` | Reads `relatedResources` array from frontmatter |
+| Tab navigation (JS) | **N** | `TopicPage.afterDOMLoaded` | Client-side tab switching (概览/核心文章/相关资源) |
 
 ---
 
@@ -80,16 +82,17 @@
 
 ## Zone 5: Resources Page (Frame 05)
 
+**Implementation note:** Originally planned as Hub DSL extension. Implemented as standalone `ResourcePage.tsx` pageType.
+
 | Design element | Decision | Existing target | Action |
 |---|---|---|---|
 | Top nav | **K** | `BrandHeader.tsx` | No change |
 | Breadcrumb (首页 / 资源) | **K** | breadcrumbs plugin | Reuse |
-| Page h1 (资源库) | **K** | `HubHero.tsx` | Reuse |
-| Description | **K** | `HubHero.tsx` | Reuse |
-| Filter bar (全部 / 书籍 / 工具 / 文章 / 网站 / 论文 + tags) | **N** | — | New `ResourceFilterBar` component |
-| Resource list with category badges | **M** | `hub/sections.tsx` ListSection | Refine card layout; data-driven category |
-| Category sidebar (with counts) | **N** | — | New `ResourceCategorySidebar` component |
-| Recent updates list | **K** | `hub/sections.tsx` ListSection | Reuse with modified date filter |
+| Page h1 (资源库) | **N** | `ResourcePage.tsx` | Renders title from frontmatter |
+| Filter bar (全部 / 书籍 / 工具 / 网站 / 论文 / 视频) | **N** | `ResourcePage.tsx` | Client-side filter tabs with JS |
+| Resource list with ContentCards | **N** | `ResourcePage.tsx` + `ContentCard.tsx` | Uses `queryResourceByType()` to find resources |
+| Category sidebar (with counts) | **N** | `ResourceSidebar.tsx` | Reads resource-type from frontmatter, computes counts |
+| Client-side filtering (JS) | **N** | `ResourcePage.afterDOMLoaded` | Shows/hides cards by `data-resource-type` |
 
 ---
 
@@ -125,14 +128,17 @@
 
 ## Zone 8: Footer (Frame 08)
 
+**Implementation note:** Enhanced `BrandFooter.tsx` in place (not replaced with `SiteFooter.tsx`). Mountain motif and Back to Top deferred.
+
 | Design element | Decision | Existing target | Action |
 |---|---|---|---|
-| 探索 (知识库/专题/资源/图谱) | **R** | `BrandFooter.tsx` | New column in 4-column footer |
-| 花园 (随机漫步/最新动态/标签/归档) | **R** | — | New column |
-| 联系 (GitHub/Email/RSS订阅) | **K** | `BrandFooter.tsx` (socials) | Migrate to 4-column layout |
-| 关于 (关于花园/使用须知/开源地址/LICENSE) | **R** | — | New column |
-| Mountain motif decoration | **N** | — | Reuse `Mountain.tsx` at smaller size in footer |
-| "© 2026 温哲 · Stargazer Digital Garden" credit | **K** | `BrandFooter.tsx` | Migrate |
+| 探索 (知识库/专题/资源/图谱) | **M** | `BrandFooter.tsx` | Reads from `getNavItems()` (Chinese labels auto) |
+| 花园 (随机漫步/最新动态/归档) | **N** | `BrandFooter.tsx` | Titles only (no links yet) |
+| 联系 (GitHub/Email/RSS订阅) | **K** | `BrandFooter.tsx` (socials) | Migrated to 4-column layout |
+| 关于 (关于花园/使用说明/开源地址) | **N** | `BrandFooter.tsx` | New column |
+| Mountain motif decoration | **—** | — | **Deferred** (needs full-width footer) |
+| "© 2026 温哲 · Stargazer" credit | **K** | `BrandFooter.tsx` | Migrated to bottom section |
+| Back to Top | **—** | — | **Deferred** |
 
 ---
 
@@ -172,20 +178,20 @@
 
 | Addition | Decision | Notes |
 |---|---|---|
-| `topic-page` pageType | **NO** | Fold into Hub; Hub DSL gains `timeline` and `related-topics` section types |
-| `resources-page` pageType | **NO** | Fold into Hub; Resources hub gains `filter-bar` and `category-sidebar` |
+| `topic-page` pageType | **YES (N)** | Standalone `TopicPage.tsx` (revised from Hub DSL extension) |
+| `resources-page` pageType | **YES (N)** | Standalone `ResourcePage.tsx` + `ResourceSidebar.tsx` (revised from Hub DSL extension) |
 | `about-page` pageType | **NO** | About remains single page; components are added |
-| `contentStats` plugin | **YES (N)** | New Quartz plugin; computes site-wide stats |
-| `MasteryGraph` component | **YES (N)** | Wraps existing `ScopedGraph.tsx` |
-| `KnowledgeAreaCards` component | **YES (N)** | New; renders 4-area card grid on home |
-| `LearningTimeline` component | **YES (N)** | New; horizontal/vertical timeline |
-| `QuoteCallout` component | **YES (N)** | New; data-driven quote display |
-| `ArticleSidebar` wrapper | **YES (N)** | New; composes MetadataPanel + mini graph + backlinks |
-| `ResourceFilterBar` component | **YES (N)** | New; filter UI for Resources |
-| `MasteryLegend` + `MasteryFilter` | **YES (N)** | New; graph controls |
-| `AboutPrinciples` component | **YES (N)** | New; renders principles from frontmatter |
-| `QuickLinksGrid` component | **YES (N)** | New; renders quick links from frontmatter |
-| `KnowledgeAreaCard` component | **YES (N)** | New; renders a single area card |
+| `contentStats` plugin | **DEFERRED** | Stats computed inline via `getHubStats()` in `pageTypeRegistry.ts` |
+| `MasteryGraph` component | **NOT STARTED** | Wraps existing `ScopedGraph.tsx` |
+| `KnowledgeAreaCards` component | **DONE** as `KnowledgeAreasSection.tsx` | Auto-discovers hubs from `getHubs()` |
+| `LearningTimeline` component | **REMOVED** per user | User decided: no 学习路径 on Topic pages |
+| `QuoteCallout` component | **DONE** as `QuoteSection.tsx` | Reads from `brand.quote` config |
+| `ArticleSidebar` wrapper | **NOT STARTED** | Composes MetadataPanel + mini graph + backlinks |
+| `ResourceFilterBar` component | **DONE** inline in `ResourcePage.tsx` | Client-side filter tabs |
+| `MasteryLegend` + `MasteryFilter` | **NOT STARTED** | Graph controls |
+| `AboutPrinciples` component | **NOT STARTED** | Renders principles from frontmatter |
+| `QuickLinksGrid` component | **NOT STARTED** | Renders quick links from frontmatter |
+| `KnowledgeAreaCard` component | **DONE** as part of `KnowledgeAreasSection.tsx` | Single area card within grid |
 
 ---
 

@@ -1,0 +1,107 @@
+// Hub page styles — stats row, core topics grid, tabs
+
+// ── Hub Header ─────────────────────────────────────────────────
+.hub-header {
+  margin-bottom: var(--space-8);
+
+  &-title {
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 4vw, 2.25rem);
+    font-weight: 700;
+    margin: 0 0 var(--space-3);
+    letter-spacing: -0.02em;
+  }
+
+  &-desc {
+    font-size: 1.0625rem;
+    color: var(--text-muted);
+    margin: 0 0 var(--space-6);
+    max-width: 40rem;
+  }
+}
+
+// ── Hub Stats ──────────────────────────────────────────────────
+.hub-stats {
+  display: flex;
+  gap: var(--space-6);
+  padding: var(--space-6) 0;
+  border-bottom: 1px solid var(--lightgray);
+
+  @media (max-width: 600px) {
+    gap: var(--space-4);
+    flex-wrap: wrap;
+  }
+
+  &-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 3rem;
+  }
+
+  &-value {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1;
+  }
+
+  &-label {
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+    margin-top: var(--space-1);
+  }
+}
+
+// ── Core Topics Grid ──────────────────────────────────────────
+.core-topics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-4);
+
+  @media (min-width: 700px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.core-topic-card {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-6);
+  background: var(--surface-elevated);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  color: inherit;
+  transition: box-shadow 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
+
+  &-title {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0 0 var(--space-2);
+  }
+
+  &-desc {
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+    margin: 0 0 var(--space-3);
+    flex: 1;
+  }
+
+  &-count {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+}
+
+// ── Hub Sections ──────────────────────────────────────────────
+.hub-page {
+  .hub-sections {
+    margin-top: var(--space-8);
+  }
+}

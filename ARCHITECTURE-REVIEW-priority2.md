@@ -113,6 +113,85 @@ Footer
 
 No Now section. No Projects section. No Featured section. No timeline. No feed.
 
+### Enhanced Knowledge Hub page (per design)
+
+```
+Breadcrumb: 首页 / 知识库
+Title: {hub-name} 知识库
+Description: {hub description from frontmatter}
+
+Stats Row (auto-computed at build time):
+┌──────────┬──────────┬──────────┬──────────┬──────────┐
+│ 128      │ 24       │ 36       │ 18       │ 320+     │
+│ 笔记     │ 专题     │ 标签     │ 系列     │ 链接     │
+└──────────┴──────────┴──────────┴──────────┴──────────┘
+
+Tabs: [学习路径] [知识树] [核心专题] [推荐阅读] [图谱视图]
+
+Core Topics Grid (from child pages with type: topic):
+┌───────────┬───────────┬───────────┬───────────┐
+│ Framework │ 性能优化   │ 系统服务   │ 图形渲染   │
+│ 32 笔记    │ 16 笔记    │ 15 笔记    │ 12 笔记    │
+└───────────┴───────────┴───────────┴───────────┘
+```
+
+**Stats computation:** `getHubStats(hubFile, allFiles)` counts:
+- `笔记` = child pages (non-index, non-hub files in hub scope)
+- `专题` = child pages with `type: topic`
+- `标签` = unique tags across all child pages
+- `系列` = unique `series` values across child pages
+- `链接` = total outbound wiki-links + external links across child pages
+
+**Core Topics Grid:** Renders child pages that have `type: topic` as cards with title + note count. Uses `ContentCard` component with topic variant.
+
+**Note:** Learning path timeline is deferred to a later phase. The "学习路径" tab will be empty or show a placeholder for now.
+
+### Enhanced Topic page (per design, no learning path)
+
+```
+Breadcrumb: 首页 / {hub} / {topic-name}
+Title: {topic-title}
+Description: {topic description}
+Meta: {author} · {type-badge} · {date}
+
+Tabs: [概览] [核心文章] [相关资源]
+
+概览 tab:
+  - Description (from frontmatter)
+  - Key concepts list (from frontmatter or auto-extracted)
+
+核心文章 tab:
+  - List of articles in this topic as ContentCard items
+
+相关资源 tab:
+  - Related links, tools, references
+```
+
+**No 学习路径 (learning path) tab** — removed per user decision.
+
+### Enhanced Resource page (per design)
+
+```
+Breadcrumb: 首页 / 资源库
+Title: 资源库
+Description: 精选书籍、工具、网站、论文、视频等学习资源
+
+Filter Tabs: [全部] [书籍] [工具] [网站] [论文] [视频]
+
+Two-column layout:
+Left (70%): Resource list (ContentCard items with icon, title, description, status)
+Right (30%): 资源分类 sidebar
+  - 书籍 20
+  - 工具 30
+  - 网站 42
+  - 论文 18
+  - 视频 15
+
++ 最近更新 section at bottom
+```
+
+**Filter:** Client-side filtering by `resource-type` frontmatter field. Each resource file has `type: resource` (pageType) and `resource-type: book | tool | website | paper | video` (content attribute).
+
 ### New Drawer composition
 
 ```
@@ -138,19 +217,19 @@ About
 
 **Two expandable sections.** Knowledge shows `type: hub` from anywhere; Topics shows `type: topic`. Both populated by `pageTypeRegistry.getHubs()` / `getTopics()` — no path prefixes, no hardcoding.
 
-### New Footer composition
+### New Footer composition (per design)
 
 ```
-Explore   |  Connect        |  About
-Knowledge |  ⌘ GitHub       |  ↑ Top
-Topics    |  ✉ Email        |
-Resources |  ⊿ RSS          |
-Graph     |
-─────────────────────────────
-Motto
-© year · Built with Quartz
+Stargazer                    |  探索           |  花园             |  联系            |  关于
+Knowledge grows slowly,      |  知识库         |  随机游走          |  GitHub          |  关于花园
+connections make it valuable.|  专题           |  最新动态          |  Email           |  说明文档
+                             |  资源           |  归档             |  RSS 订阅         |  开源地址
+                             |  图谱           |                  |                  |
+─────────────────────────────────────────────────────────────────────────────────────────────
+© 2024 温哲 · Stargazer Digital Garden          最后更新 2024-05-31
 ```
 
+**4 columns:** 探索 (nav links) · 花园 (garden features — titles only, no links yet) · 联系 (socials) · 关于 (meta links).
 No "Projects" anywhere. Topics replaces Projects.
 
 ### New Metadata panel
@@ -188,6 +267,8 @@ Used in: Home Knowledge Areas, Home Latest Essays, Hub sections, Folder pages, T
 | `queryResources(allFiles)` | All files under any Resources/ hub |
 | `queryFeatured(allFiles, limit?)` | All `featured: true` files, sorted by `featuredOrder` |
 | `queryRecent(allFiles, limit?)` | Recent files, by modified date |
+| `queryResourceByType(allFiles, type?)` | Resources filtered by `resource-type` frontmatter |
+| `getHubStats(hubFile, allFiles)` | Compute `{ notes, topics, tags, series, links }` for a hub |
 
 **Delete:** `queryFolder("projects")` usage in Home. The function itself stays as a generic utility (used by `queryByTopic` internally). The `FeaturedType` union no longer needs `"project"`.
 
@@ -202,10 +283,13 @@ Used in: Home Knowledge Areas, Home Latest Essays, Hub sections, Folder pages, T
 | PageType | Add 3 new specs (topic, resource, about); none deleted | Easy — additive |
 | Card | 3 variants → 1 ContentCard; ~40 lines of CSS removed | Medium — touches FeaturedSection, ProjectsSection |
 | Home | 4 sections → 4 sections but 3 redesigns; Now/Projects removed | Medium — touches Home.tsx, content/index.md, hero.md |
+| Knowledge Hub | Enhanced with stats row + core topics grid + tabs | Medium — new components + Hub.tsx modification |
+| Topic | New tabbed layout (概览/核心文章/相关资源) | Medium — new TopicPage component |
+| Resource | New filter + two-column layout | Medium — new ResourcePage + ResourceSidebar |
 | Metadata | Reorder fields; drop "项目" label | Easy |
 | Query | New functions; FeaturedType slimmed; "projects" folder query removed | Easy |
 | Drawer | 1 expandable section → 2 expandable sections | Medium |
-| Footer | 1 item relabeled (Projects → Topics) | Easy |
+| Footer | 1 item relabeled → 4-column layout redesign | Medium — BrandFooter.tsx rewrite |
 
 **No breaking change for readers** — all existing URLs (`/projects`, `/Knowledge/Android`, etc.) still resolve. The visual change is the removal of Now/Projects on Home and the unification of cards.
 
@@ -215,14 +299,15 @@ Used in: Home Knowledge Areas, Home Latest Essays, Hub sections, Folder pages, T
 
 ## Migration Plan (8 phases, sequential, stop after each)
 
-### Phase 2.1 — PageType registry: add `topic`, `resource`, `about`
+### Phase 2.1 — PageType registry: add `topic`, `resource`, `about` + hub stats
 
 **Files:**
 - `src/lib/pageTypeRegistry.ts` — append 3 new PageTypeSpec entries
 - `src/lib/pageTypeRegistry.ts` — append `getTopics(allFiles, cfg)`, `getResources(allFiles, cfg)`, `getAbout(allFiles, cfg)` (mirror `getHubs`)
+- `src/lib/pageTypeRegistry.ts` — add `getHubStats(hubFile, allFiles)` helper that computes `{ notes, topics, tags, series, links }` for a given hub
 - `quartz.config.yaml` — extend `byPageType` with `topic:`, `resource:`, `about:` layout overrides (each same as `hub:`)
 
-**Acceptance:** build succeeds, no content files have the new `type` values yet so no behavior change visible.
+**Acceptance:** build succeeds, no content files have the new `type` values yet so no behavior change visible. `getHubStats` can be called but no component consumes it yet.
 
 ### Phase 2.2 — ContentQuery refactor
 
@@ -253,19 +338,19 @@ Used in: Home Knowledge Areas, Home Latest Essays, Hub sections, Folder pages, T
 
 **Acceptance:** any article's metadata panel shows the owning topic first, then type, then status, then tags, then dates. No "项目" label.
 
-### Phase 2.5 — Navigation & Drawer reorganization
+### Phase 2.5 — Navigation, Drawer & Footer reorganization
 
 **Files:**
 - `src/lib/navigation.ts` — change `id: "projects"` → `id: "topics"`, `label: "Projects"` → `label: "Topics"`, keep `href: "/projects"`, add `expandable: true` and `// TODO(domain-migration): rename content/Projects/ → content/Topics/ and update href to /topics` comment
 - `src/components/DrawerNav.tsx` — add a second expandable section for Topics, populated via `getTopics()`; filter out top-level nav items (Knowledge, Topics, Resources, Graph) from both sections
 - `src/components/BrandHeader.tsx` — no change (consumes `getNavItems()` automatically)
-- `src/components/BrandFooter.tsx` — Explore column now reads Topics instead of Projects (consumes `getNavItems()` automatically)
+- `src/components/BrandFooter.tsx` — **redesign to 4-column layout per design:** 探索 (nav links from `getNavItems()`) · 花园 (titles only: 随机游走/最新动态/归档, no links yet) · 联系 (GitHub/Email/RSS) · 关于 (关于花园/说明文档/开源地址) · bottom: Motto + Copyright + last updated date
 
-**Acceptance:** Header shows Knowledge / Topics / Resources / Graph / About; Drawer has Knowledge ▾ and Topics ▾; Footer Explore shows Topics instead of Projects. All three still pull from `navigation.ts`.
+**Acceptance:** Header shows Knowledge / Topics / Resources / Graph / About; Drawer has Knowledge ▾ and Topics ▾; Footer has 4 columns matching design. All three still pull from `navigation.ts`.
 
-### Phase 2.6 — Home redesign
+### Phase 2.6 — Home redesign + Enhanced page layouts
 
-**Files:**
+**Files (Home):**
 - `src/components/Home.tsx` — drop `"now" | "projects"` from `Order` type and `DEFAULT_ORDER`; add `"knowledge-areas" | "latest" | "quote"`; new components `KnowledgeAreasSection`, `LatestEssaysSection`, `QuoteSection`
 - `src/components/home/KnowledgeAreasSection.tsx` — **NEW** — 5 area cards (one per Knowledge hub)
 - `src/components/home/LatestEssaysSection.tsx` — **NEW** — 3 most recent content items as ContentCard
@@ -274,7 +359,23 @@ Used in: Home Knowledge Areas, Home Latest Essays, Hub sections, Folder pages, T
 - `content/Home/hero.md` — change "查看项目" CTA → "Browse Topics" pointing to `/projects`; first CTA becomes "Enter Knowledge" pointing to `/knowledge`; add `currentlyExploring:` frontmatter field for the 3-5 currently active topics (displayed above CTAs)
 - `quartz.config.yaml` — add `brand.quote: "..."` (a single static line)
 
-**Acceptance:** Home is ≤1 screen on desktop (no scroll required to see Hero + Knowledge Areas). Now/Projects/Featured are gone. Brand voices a single line + Currently Exploring + 2 CTAs.
+**Files (Knowledge Hub enhanced):**
+- `src/components/hub/HubHeader.tsx` — **NEW** — renders title + description + stats row (calls `getHubStats`)
+- `src/components/hub/HubStats.tsx` — **NEW** — 5-cell stats row (笔记/专题/标签/系列/链接)
+- `src/components/hub/CoreTopicsGrid.tsx` — **NEW** — grid of `type: topic` child pages as ContentCard items
+- `src/components/Hub.tsx` — modify to use HubHeader + tabs layout (学习路径/知识树/核心专题/推荐阅读/图谱视图); 学习路径 tab shows placeholder for now
+- `src/styles/hub.scss` — new styles for stats row, core topics grid, tab navigation
+
+**Files (Topic page):**
+- `src/components/TopicPage.tsx` — **NEW** — tabbed layout: 概览 / 核心文章 / 相关资源; 概览 shows description + key concepts; 核心文章 shows article list; 相关资源 shows links
+- `src/styles/topic.scss` — **NEW** — tab styles, content panel styles
+
+**Files (Resource page):**
+- `src/components/ResourcePage.tsx` — **NEW** — filter tabs (全部/书籍/工具/网站/论文/视频) + two-column layout (70% list + 30% category sidebar)
+- `src/components/ResourceSidebar.tsx` — **NEW** — category counts computed from `resource-type` frontmatter
+- `src/styles/resource.scss` — **NEW** — filter tabs, two-column grid, sidebar styles
+
+**Acceptance:** Home is ≤1 screen on desktop. Knowledge Hub shows stats + core topics grid + tabs. Topic shows 3 tabs (no learning path). Resource shows filter + two-column layout. Now/Projects/Featured are gone from Home.
 
 ### Phase 2.7 — Content frontmatter migration
 
@@ -283,20 +384,21 @@ Used in: Home Knowledge Areas, Home Latest Essays, Hub sections, Folder pages, T
 - `content/Projects/ai-workflow.md` — drop `featuredType: project`; add `type: project` (content type, not pageType)
 - `content/Projects/auto-account.md` — same
 - `content/Projects/fastbuild.md` — same
-- `content/Resources/index.md` — `type: hub` → `type: resource`
+- `content/Resources/index.md` — `type: hub` → `type: resource`; add `resource-type` categories in frontmatter if needed
+- `content/Resources/**/*.md` — add `resource-type: book | tool | website | paper | video` frontmatter to each resource file (for filter tabs)
 - `content/About.md` — add `type: about`
 - `content/index.md` — already updated in 2.6
 - `src/lib/contentQuery.ts` — NOW drop `"project"` from `FeaturedType` union (last because content migration is done)
 
-**Acceptance:** build succeeds, all pages still render; each content file has correct `type:` value.
+**Acceptance:** build succeeds, all pages still render; each content file has correct `type:` value; Resource pages have `resource-type` for filtering.
 
 ### Phase 2.8 — Verification + Remaining Issues
 
 **Actions:**
 - `npm run quartz build` — must succeed, no new warnings
 - `npx tsc --noEmit` — surface any new type errors
-- Screenshot 1440 / 768 / 390 — Home, Knowledge hub, Projects (now Topics) hub, About page, Graph page
-- Assert: Header has 5 items, Drawer has Knowledge ▾ + Topics ▾ + 3 flat, Footer Explore has 4 items (Knowledge/Topics/Resources/Graph), Home has Hero + Knowledge Areas + Latest Essays + Quote, no "Project" string appears in any rendered HTML
+- Screenshot 1440 / 768 / 390 — Home, Knowledge hub (e.g. Android), Topic hub (e.g. AI-Workflow), Resource page, About page, Graph page
+- Assert: Header has 5 items, Drawer has Knowledge ▾ + Topics ▾ + 3 flat, Footer has 4 columns (探索/花园/联系/更多), Home has Hero + Knowledge Areas + Latest Essays + Quote, Knowledge Hub shows stats row + core topics grid + tabs, Topic page shows 3 tabs (概览/核心文章/相关资源), Resource page shows filter tabs + two-column layout, no "Project" string appears in any rendered HTML
 - Output: `Remaining Issues` list (folder migration TODO, any deprecation warnings, anything not covered)
 
 ---
@@ -313,6 +415,10 @@ Used in: Home Knowledge Areas, Home Latest Essays, Hub sections, Folder pages, T
 | Content authors don't know they need to set `type:` on new files | Medium | Add a small comment block at the top of `content/index.md` documenting the new type values |
 | `getOwningHub()` computation in 2.4 is O(n) per article — for 24 files it's fine, for 1000+ it could be slow | Low | Memoize at build start; for now, direct computation is acceptable for 24 files |
 | `quartz.config.yaml` `byPageType` may need new entries for `topic`/`resource`/`about`; if not added, they fall back to `content` layout which is wrong for the new pages | Medium | Phase 2.1 adds all 3 layout overrides explicitly. |
+| `getHubStats()` link counting may be slow for hubs with many outbound links | Low | Count is O(children × avg-links); acceptable for current scale. Memoize if needed. |
+| Resource `resource-type` frontmatter must be added to every resource file manually | Medium | Phase 2.7 migration covers existing files; add comment in `content/Resources/index.md` documenting the required field. |
+| Footer 4-column layout may not render well on mobile (< 768px) | Medium | Mobile: stack columns vertically; 探索 and 花园 collapse into accordions. Test in Phase 2.8 screenshots. |
+| Topic page tabs require client-side JS for switching | Low | Quartz renders static HTML; tabs can be CSS-only (`:target` or `<details>`). Avoid React hydration for simple tab switching. |
 
 ---
 
@@ -320,7 +426,7 @@ Used in: Home Knowledge Areas, Home Latest Essays, Hub sections, Folder pages, T
 
 | Phase | File | Action |
 |-------|------|--------|
-| 2.1 | `src/lib/pageTypeRegistry.ts` | Add 3 specs + 3 enumerators |
+| 2.1 | `src/lib/pageTypeRegistry.ts` | Add 3 specs + 3 enumerators + `getHubStats` helper |
 | 2.1 | `quartz.config.yaml` | Add 3 byPageType entries |
 | 2.2 | `src/lib/contentQuery.ts` | Add 5 query functions; **keep** `"project"` in FeaturedType for now |
 | 2.3 | `src/components/ContentCard.tsx` | Add `type` prop + Type badge |
@@ -332,11 +438,21 @@ Used in: Home Knowledge Areas, Home Latest Essays, Hub sections, Folder pages, T
 | 2.4 | `src/lib/contentQuery.ts` | Add `getOwningHub` helper |
 | 2.5 | `src/lib/navigation.ts` | Relabel + add TODO |
 | 2.5 | `src/components/DrawerNav.tsx` | Add Topics expandable section |
-| 2.5 | `src/components/BrandFooter.tsx` | No code change (consumes nav automatically) |
+| 2.5 | `src/components/BrandFooter.tsx` | **Redesign to 4-column layout** |
 | 2.6 | `src/components/Home.tsx` | Replace Order type and switch |
 | 2.6 | `src/components/home/KnowledgeAreasSection.tsx` | **NEW** |
 | 2.6 | `src/components/home/LatestEssaysSection.tsx` | **NEW** |
 | 2.6 | `src/components/home/QuoteSection.tsx` | **NEW** |
+| 2.6 | `src/components/hub/HubHeader.tsx` | **NEW** — title + description + stats |
+| 2.6 | `src/components/hub/HubStats.tsx` | **NEW** — 5-cell stats row |
+| 2.6 | `src/components/hub/CoreTopicsGrid.tsx` | **NEW** — topic cards grid |
+| 2.6 | `src/components/Hub.tsx` | Modify for tabs layout |
+| 2.6 | `src/components/TopicPage.tsx` | **NEW** — 3-tab layout |
+| 2.6 | `src/components/ResourcePage.tsx` | **NEW** — filter + 2-column layout |
+| 2.6 | `src/components/ResourceSidebar.tsx` | **NEW** — category counts |
+| 2.6 | `src/styles/hub.scss` | **NEW** — stats, core topics, tabs |
+| 2.6 | `src/styles/topic.scss` | **NEW** — tab layout |
+| 2.6 | `src/styles/resource.scss` | **NEW** — filter, 2-column, sidebar |
 | 2.6 | `content/index.md` | Update sectionOrder |
 | 2.6 | `content/Home/hero.md` | Update CTAs, add currentlyExploring |
 | 2.6 | `quartz.config.yaml` | Add `brand.quote` |
@@ -345,13 +461,13 @@ Used in: Home Knowledge Areas, Home Latest Essays, Hub sections, Folder pages, T
 | 2.7 | `content/Projects/auto-account.md` | Same |
 | 2.7 | `content/Projects/fastbuild.md` | Same |
 | 2.7 | `content/Resources/index.md` | type: hub → type: resource |
+| 2.7 | `content/Resources/**/*.md` | Add `resource-type` frontmatter |
 | 2.7 | `content/About.md` | Add type: about |
 | 2.7 | `src/lib/contentQuery.ts` | NOW drop `"project"` from FeaturedType |
 | 2.8 | (verification) | Build, typecheck, screenshots, remaining-issues report |
 
 **Not modified (explicit non-goals for this phase):**
-- `src/components/Hub.tsx` (generic DSL — works for any hub-like page)
-- `src/components/hub/sections.tsx` (generic)
+- `src/components/hub/sections.tsx` (generic — but Hub.tsx is modified for tabs)
 - `src/components/ArticleMeta.tsx` (no project logic)
 - `src/components/CardGrid.tsx` (generic)
 - `src/components/StatusChip.tsx`
@@ -378,10 +494,13 @@ Used in: Home Knowledge Areas, Home Latest Essays, Hub sections, Folder pages, T
 3. Playwright assertions:
    - Header has 5 nav items: `["Knowledge", "Topics", "Resources", "Graph", "About"]`
    - Drawer has 7 visible sections: `["Knowledge ▾", "Topics ▾", "Resources", "Graph", "About"]` (the two expandables are visible in default state, hubs/topics list shown when expanded)
-   - Footer Explore has 4 items: `["Knowledge", "Topics", "Resources", "Graph"]`
+   - Footer has 4 columns: `["探索", "花园", "联系", "关于"]`
    - Home HTML contains sections: `["hero", "knowledge-areas", "latest", "quote"]` and does NOT contain `projects-section` or `now-section` class
+   - Knowledge Hub page contains: stats row (笔记/专题/标签/系列/链接) + core topics grid + tab navigation
+   - Topic page contains: 3 tabs (概览/核心文章/相关资源), does NOT contain 学习路径
+   - Resource page contains: filter tabs (全部/书籍/工具/网站/论文/视频) + two-column layout
    - No rendered HTML anywhere contains the substring `Project Card` or `项目` (search via `grep -r "项目" public/` returns only the home/projects URLs in nav, not labels)
-4. Screenshots: Home (1440/768/390), Knowledge/Android hub (1440), Topics hub (1440), About (1440), Graph (1440). Verify: Hero ≤1 screen, no Now section, no Projects section on Home, cards are uniform ContentCard, drawer has two expandable sections.
+4. Screenshots: Home (1440/768/390), Knowledge/Android hub (1440), Topic hub (1440), Resource page (1440), About (1440), Graph (1440). Verify: Hero ≤1 screen, no Now section, no Projects section on Home, cards are uniform ContentCard, drawer has two expandable sections, Hub shows stats + core topics grid, Resource shows filter + two-column.
 
 ---
 

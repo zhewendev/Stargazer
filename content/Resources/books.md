@@ -2,6 +2,7 @@
 title: 书单
 description: 正在阅读与推荐的技术、非技术书籍
 tags: [books]
+resource-type: book
 status: seed
 ---
 
