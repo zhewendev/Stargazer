@@ -1,9 +1,8 @@
 // CoreTopicsGrid — grid of `type: topic` child pages for Knowledge Hub.
 //
-// Renders child pages that have `type: topic` as cards with title + note count.
+// Renders child pages that have `type: topic` as cards with icon + title + note count.
 
 import type { QuartzPluginData } from "../../../quartz/plugins/vfile"
-import { resolveRelative, FullSlug } from "../../../quartz/util/path"
 
 interface CoreTopicsGridProps {
   hubSlug: string
@@ -11,7 +10,6 @@ interface CoreTopicsGridProps {
 }
 
 export function CoreTopicsGrid({ hubSlug, allFiles }: CoreTopicsGridProps) {
-  // Find child pages with type: topic
   const topics = allFiles.filter((f) => {
     const slug = f.slug ?? ""
     const fm = (f.frontmatter ?? {}) as Record<string, unknown>
@@ -30,8 +28,8 @@ export function CoreTopicsGrid({ hubSlug, allFiles }: CoreTopicsGridProps) {
         const fm = (topic.frontmatter ?? {}) as Record<string, unknown>
         const title = (fm.title as string) ?? topic.slug?.split("/").pop() ?? ""
         const description = (fm.description as string) ?? ""
+        const icon = (fm.icon as string | undefined) ?? "📄"
 
-        // Count child pages of this topic
         const topicSlug = topic.slug ?? ""
         const childCount = allFiles.filter(
           (f) => f.slug?.startsWith(topicSlug + "/") && f.slug !== topicSlug + "/index",
@@ -39,6 +37,7 @@ export function CoreTopicsGrid({ hubSlug, allFiles }: CoreTopicsGridProps) {
 
         return (
           <a key={topic.slug} class="core-topic-card" href={"/" + topic.slug}>
+            <span class="core-topic-icon" aria-hidden="true">{icon}</span>
             <h3 class="core-topic-title">{title}</h3>
             {description && <p class="core-topic-desc">{description}</p>}
             <span class="core-topic-count">{childCount} 笔记</span>

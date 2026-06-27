@@ -1,6 +1,6 @@
-// Resource page styles — filter tabs + two-column layout
+// Resource page styles — per design Frame 05
 
-// ── Resource Header ────────────────────────────────────────────
+// ── Resource Header ──────────────────────────────────────────
 .resource-page {
   max-width: 100%;
 }
@@ -24,93 +24,200 @@
   }
 }
 
-// ── Resource Filter Tabs ──────────────────────────────────────
+// ── Filter Tabs ──────────────────────────────────────────────
 .resource-filter-tabs {
   display: flex;
-  gap: var(--space-1);
+  gap: 0;
   border-bottom: 1px solid var(--lightgray);
-  margin-bottom: var(--space-6);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 .resource-filter-tab {
+  flex-shrink: 0;
   padding: var(--space-3) var(--space-4);
+  min-height: 44px;
   background: none;
   border: none;
   border-bottom: 2px solid transparent;
+  font-family: var(--font-display);
   font-size: 0.9375rem;
+  font-weight: 500;
   color: var(--text-muted);
   cursor: pointer;
-  transition: color 0.2s, border-color 0.2s;
+  transition: color var(--motion-fast) var(--motion-easing),
+              border-color var(--motion-fast) var(--motion-easing);
+  white-space: nowrap;
 
   &:hover {
-    color: var(--text);
+    color: var(--text-primary);
   }
 
   &.active {
-    color: var(--text);
+    color: var(--accent-primary);
     border-bottom-color: var(--accent-primary);
-    font-weight: 500;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--accent-primary);
+    outline-offset: -2px;
   }
 }
 
-// ── Resource Layout (two-column) ──────────────────────────────
+// ── Resource Layout ──────────────────────────────────────────
 .resource-layout {
   display: grid;
   grid-template-columns: 1fr;
   gap: var(--space-8);
+  margin-top: var(--space-6);
 
   @media (min-width: 768px) {
     grid-template-columns: 2fr 1fr;
   }
 }
 
+// ── Resource List ────────────────────────────────────────────
 .resource-list {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--space-4);
-}
-
-// ── Resource Sidebar ──────────────────────────────────────────
-.resource-sidebar-content {
-  position: sticky;
-  top: var(--space-8);
-}
-
-.resource-sidebar-title {
-  font-family: var(--font-display);
-  font-size: 1rem;
-  font-weight: 600;
-  margin: 0 0 var(--space-4);
-}
-
-.resource-sidebar-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.resource-sidebar-item {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: var(--space-3) 0;
+  flex-direction: column;
+  gap: 0;
+}
+
+.resource-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-4) 0;
   border-bottom: 1px solid var(--lightgray);
-}
 
-.resource-sidebar-label {
-  font-size: 0.9375rem;
-  color: var(--text);
-}
+  &:last-child {
+    border-bottom: none;
+  }
 
-.resource-sidebar-count {
-  font-size: 0.8125rem;
-  color: var(--text-muted);
-  background: var(--surface-elevated);
-  padding: var(--space-1) var(--space-3);
-  border-radius: var(--radius-sm);
+  &-icon {
+    font-size: 1.25rem;
+    flex-shrink: 0;
+    line-height: 1;
+    margin-top: var(--space-1);
+  }
+
+  &-body {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &-title {
+    font-weight: 500;
+    font-size: 0.9375rem;
+    color: var(--text-primary);
+    text-decoration: none;
+
+    &:hover {
+      color: var(--accent-primary);
+      text-decoration: none;
+    }
+  }
+
+  &-desc {
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+    margin: var(--space-1) 0 0;
+    line-height: 1.5;
+  }
+
+  &-type {
+    flex-shrink: 0;
+    font-size: 0.6875rem;
+    color: var(--accent-primary);
+    background: var(--surface-elevated);
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-sm);
+    white-space: nowrap;
+  }
 }
 
 .resource-empty {
   color: var(--text-muted);
-  font-style: italic;
+  font-size: 0.875rem;
+  padding: var(--space-8) 0;
+  text-align: center;
+}
+
+// ── 最近更新 ────────────────────────────────────────────────
+.resource-recent {
+  margin-top: var(--space-10);
+  padding-top: var(--space-8);
+  border-top: 1px solid var(--lightgray);
+
+  &-title {
+    font-family: var(--font-display);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin: 0 0 var(--space-4);
+  }
+
+  &-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  &-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3) 0;
+    border-bottom: 1px solid var(--lightgray);
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  &-icon {
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+
+  &-link {
+    flex: 1;
+    font-size: 0.875rem;
+    color: var(--text-primary);
+    text-decoration: none;
+
+    &:hover {
+      color: var(--accent-primary);
+      text-decoration: none;
+    }
+  }
+
+  &-date {
+    flex-shrink: 0;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+// ── Mobile ───────────────────────────────────────────────────
+@media (max-width: 600px) {
+  .resource-filter-tab {
+    font-size: 0.8125rem;
+    padding: var(--space-2) var(--space-3);
+  }
+
+  .resource-item-type {
+    display: none;
+  }
 }

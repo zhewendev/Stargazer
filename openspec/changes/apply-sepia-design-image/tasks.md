@@ -11,6 +11,8 @@
 
 **Phase rules (per user):** Before every phase, explain Current / Target / Files / Reason / Screenshots. Never modify unrelated files. Each phase must compile (`npm run quartz build`). Each phase needs screenshots at 1440 / 768 / 390.
 
+**Design fidelity phases (13-17):** Added 2026-06-27 after deployment revealed Hub/Topic/Resource pages diverge significantly from design frames 02/03/05. These phases close the gap. Breadcrumbs already handled by plugin (Phase 13 is config-only).
+
 ---
 
 ## Phase 1: Audit (no code)
@@ -334,6 +336,109 @@ These tasks support multiple phases and should be completed early.
 
 ---
 
+## Phase 13: Breadcrumbs Configuration (Quick fix)
+
+**Status:** PENDING.
+**Current state:** Breadcrumbs plugin already renders in `beforeBody` for hub/topic/resource pages. Root label defaults to `"Home"`.
+**Target state:** Root label changed to `"首页"`. Breadcrumbs visible on all non-index pages.
+**Files modified:** `quartz.config.yaml`.
+**Reason:** Design image shows `首页 / 知识库` breadcrumbs on every page.
+
+### Tasks
+
+- [ ] 13.1 **[M]** Add `rootName: "首页"` to breadcrumbs plugin options in `quartz.config.yaml`
+- [ ] 13.2 **[M]** Verify breadcrumbs render correctly on hub/topic/resource/content pages
+- [ ] 13.3 **[M]** `npx quartz build` — must succeed
+
+---
+
+## Phase 14: Knowledge Hub Page (Frame 02 — Image-faithful)
+
+**Status:** PENDING.
+**Current state:** `Hub.tsx` renders HubHero + flat sections via DSL. HubStats exists but is not wired. No tab navigation. No learning map.
+**Target state:** Per design Frame 02 — breadcrumbs → title/subtitle → 5-cell stats → tab navigation (学习地图/知识树/核心专题/推荐阅读/图谱概览) → tab content.
+**Files modified:** `src/components/Hub.tsx` (rewrite body), new `src/components/hub/HubTabs.tsx`, new `src/components/hub/LearningMap.tsx`, `src/components/hub/CoreTopicsGrid.tsx` (add icon), `src/styles/hub.scss`.
+**Reason:** Design image Frame 02 (1:1 fidelity). Knowledge areas are the primary navigation surface.
+
+### Tasks
+
+- [ ] 14.1 **[N]** Create `src/components/hub/HubTabs.tsx` — accessible tab component with `role="tablist"` / `role="tab"` / `role="tabpanel"`, Arrow key navigation, client-side switching
+- [ ] 14.2 **[N]** Create `src/components/hub/LearningMap.tsx` — vertical timeline reading `learningPath` from frontmatter `[{ stage, items[] }]`; graceful fallback if no data
+- [ ] 14.3 **[M]** Rewrite `src/components/Hub.tsx` body: integrate HubStats + HubTabs with 5 tab panels
+- [ ] 14.4 **[M]** `CoreTopicsGrid.tsx`: read `icon` field from child frontmatter, render icon above title
+- [ ] 14.5 **[M]** `src/styles/hub.scss`: tab bar styles (horizontal scroll on mobile), timeline styles, icon styles
+- [ ] 14.6 **[M]** `content/Knowledge/AI/index.md` frontmatter: add `learningPath` array, `icon`, ensure `type: hub`
+- [ ] 14.7 **[M]** `content/Knowledge/Android/index.md` frontmatter: same
+- [ ] 14.8 **[M]** `npx quartz build` — must succeed
+- [ ] 14.9 **[M]** Screenshots at 1440 / 768 / 390 — verify against design Frame 02
+
+---
+
+## Phase 15: Topic Page (Frame 03 — Image-faithful)
+
+**Status:** PENDING.
+**Current state:** `TopicPage.tsx` has 3 tabs (概览/核心文章/相关资源). No breadcrumbs (handled by plugin). No tags row, no stats row, no learning path.
+**Target state:** Per design Frame 03 — breadcrumbs → title/subtitle → tags row → stats row → 6 tabs (概览/学习路径/核心文章/工具与资源/相关专题/图谱视图).
+**Files modified:** `src/components/TopicPage.tsx` (rewrite), `src/styles/` (topic-specific styles).
+**Reason:** Design image Frame 03 (1:1 fidelity).
+
+### Tasks
+
+- [ ] 15.1 **[M]** `TopicPage.tsx`: add tags row rendering from `fm.tags`
+- [ ] 15.2 **[M]** `TopicPage.tsx`: add stats row (更新日期 / 笔记数 / 系列数)
+- [ ] 15.3 **[M]** `TopicPage.tsx`: rewrite tab system to 6 tabs with accessible tab component
+- [ ] 15.4 **[M]** Tab: 概览 — render description + overview content
+- [ ] 15.5 **[N]** Tab: 学习路径 — reuse `LearningMap.tsx` from Phase 14
+- [ ] 15.6 **[M]** Tab: 核心文章 — article list with title + tags + date per item
+- [ ] 15.7 **[N]** Tab: 工具与资源 — render `resources` frontmatter array `[{ title, url, description }]`
+- [ ] 15.8 **[N]** Tab: 相关专题 —基于 tags 的关联推荐，graceful fallback
+- [ ] 15.9 **[M]** Tab: 图谱视图 — reuse `ScopedGraph` with topic scope
+- [ ] 15.10 **[M]** `content/Topics/*.md` frontmatter: add `learningPath`, `resources`, `relatedTopics` where applicable
+- [ ] 15.11 **[M]** `npx quartz build` — must succeed
+- [ ] 15.12 **[M]** Screenshots at 1440 / 768 / 390 — verify against design Frame 03
+
+---
+
+## Phase 16: Resource Page (Frame 05 — Image-faithful)
+
+**Status:** PENDING.
+**Current state:** `ResourcePage.tsx` has filter tabs + sidebar. Resource items use generic `ContentCard` without icons or category labels. No "最近更新" section.
+**Target state:** Per design Frame 05 — breadcrumbs → title/subtitle → filter tabs → resource list (icons + category labels) + sidebar → 最近更新 section.
+**Files modified:** `src/components/ResourcePage.tsx` (enhance), `src/styles/resource.scss`.
+**Reason:** Design image Frame 05 (1:1 fidelity).
+
+### Tasks
+
+- [ ] 16.1 **[M]** `ResourcePage.tsx`: add icon mapping per `resource-type` (📖 书籍 / 🔧 工具 / 🌐 网站 / 📄 论文 / 🎬 视频)
+- [ ] 16.2 **[M]** `ResourcePage.tsx`: render `resource-type` as visible category label on each item
+- [ ] 16.3 **[N]** `ResourcePage.tsx`: add "最近更新" section at bottom, showing resources sorted by `dates.modified` desc, limit 5
+- [ ] 16.4 **[M]** `ResourcePage.tsx`: ensure `data-resource-type` attribute on each card for client-side filtering
+- [ ] 16.5 **[M]** `src/styles/resource.scss`: resource item icon styles, category badge styles, "最近更新" section styles
+- [ ] 16.6 **[M]** `npx quartz build` — must succeed
+- [ ] 16.7 **[M]** Screenshots at 1440 / 768 / 390 — verify against design Frame 05
+
+---
+
+## Phase 17: Mobile + Accessibility for New Components
+
+**Status:** PENDING.
+**Current state:** Phases 14-16 add new components without mobile/a11y pass.
+**Target state:** All new tab/timeline/list components work at 375/390/430. Tabs keyboard-navigable. Timelines degrade gracefully.
+**Files modified:** `src/styles/hub.scss`, `src/styles/resource.scss`, component files.
+**Reason:** Principles: mobile-first, accessibility AA.
+
+### Tasks
+
+- [ ] 17.1 **[M]** HubTabs: horizontal scroll on mobile, active tab indicator, Arrow key + Home/End navigation
+- [ ] 17.2 **[M]** LearningMap: collapse to simple list on ≤600px (no connecting lines)
+- [ ] 17.3 **[M]** TopicPage tabs: same mobile treatment as HubTabs
+- [ ] 17.4 **[M]** ResourcePage: single-column on mobile, sidebar below content
+- [ ] 17.5 **[M]** All new components: `role="tablist"`, `role="tab"`, `role="tabpanel"`, `aria-selected`, `aria-controls`
+- [ ] 17.6 **[M]** `npx quartz build` — must succeed
+- [ ] 17.7 **[M]** Screenshots at 375 / 390 / 430 — verify mobile layout
+
+---
+
 ## Summary
 
 | Phase | Focus | Authority | Status |
@@ -350,8 +455,14 @@ These tasks support multiple phases and should be completed early.
 | 10 | Accessibility | Principles | **MOSTLY DONE** — focus rings + reduced-motion done, contrast audit pending |
 | 11 | Animation | Principles | **DONE** |
 | 12 | Final screenshots | Both | Pending |
+| 13 | Breadcrumbs config | Image | Pending |
+| 14 | Knowledge Hub page | Image (1:1) | Pending |
+| 15 | Topic page | Image (1:1) | Pending |
+| 16 | Resource page | Image (1:1) | Pending |
+| 17 | Mobile + A11y for new components | Principles | Pending |
 
 **Conflicts surfaced: 4** (Home density, Hub sections, About depth, Footer nav). Image wins in each. User informed.
+**Design fidelity gap identified:** Phases 14-16 close the gap between current implementation and design frames 02/03/05.
 
 **Implementation deviations from original plan:**
 - Footer: enhanced `BrandFooter.tsx` in place (not replaced with `SiteFooter.tsx`)

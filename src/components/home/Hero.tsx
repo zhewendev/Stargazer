@@ -33,12 +33,21 @@ const HERO_HEIGHT = 260
 
 export function Hero({ cfg, fileData, allFiles }: HeroProps) {
   // Brand identity (per D24 hierarchy).
-  const brand = (cfg as any).brand ?? {}
-  const brandName = brand.name ?? cfg.pageTitle
-  const brandProject = brand.project ?? ""
-  const brandForm = brand.form ?? ""
+  const brand = (cfg as Record<string, unknown>)?.brand as Record<string, string> | undefined ?? {}
+  const brandName = brand?.name ?? cfg.pageTitle
+  const brandProject = brand?.project ?? ""
+  const brandForm = brand?.form ?? ""
   const brandContext = [brandProject, brandForm].filter(Boolean).join(" · ")
-  const brandDomain = brand.domain ?? ""
+  const brandDomain = brand?.domain ?? ""
+
+  // Compute base path prefix from cfg.baseUrl for GitHub Pages (e.g. "/Stargazer")
+  const basePath: string = (() => {
+    try {
+      if (!cfg.baseUrl) return ""
+      const url = new URL(`https://${cfg.baseUrl}`)
+      return url.pathname.replace(/\/$/, "")
+    } catch { return "" }
+  })()
 
   // Optional richer overrides from Home/hero.md.
   const heroFile = findHeroFile(allFiles)
@@ -76,7 +85,7 @@ export function Hero({ cfg, fileData, allFiles }: HeroProps) {
             {ctas.map((cta, i) => (
               <a
                 key={i}
-                href={cta.url}
+                href={basePath + cta.url}
                 class={`btn btn-${cta.variant ?? (i === 0 ? "primary" : "secondary")}`}
               >
                 {cta.label}

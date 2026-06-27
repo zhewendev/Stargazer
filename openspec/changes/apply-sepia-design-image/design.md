@@ -228,3 +228,16 @@ Future considerations (not blocking):
 - Touch gestures (swipe drawer) — out of scope; click-only acceptable for v1
 - Real-time stats refresh on content edit — out of scope; build-time only
 - Animated graph transitions on filter — out of scope; instant filter acceptable
+
+## Design Fidelity Gap (discovered 2026-06-27)
+
+Post-deployment review revealed Hub/Topic/Resource pages diverge significantly from design frames 02/03/05:
+
+**Key findings:**
+1. **Breadcrumbs**: Already handled by `@quartz-community/breadcrumbs` plugin in `beforeBody`. Root name needs config change from "Home" to "首页". No custom component needed.
+2. **Hub page**: HubStats exists but is not wired into Hub.tsx. No tab navigation system. No learning map/timeline. CoreTopicsGrid lacks icons.
+3. **Topic page**: Only 3 tabs (design requires 6). Missing tags row, stats row, learning path, tools & resources, related topics, graph view tabs.
+4. **Resource page**: Missing icons per resource type, category labels, "最近更新" section.
+5. **Frontmatter gap**: Design assumes `learningPath`, `resources`, `relatedTopics` fields that don't exist yet. Components must gracefully handle missing data.
+
+**Resolution**: Phases 13-17 in tasks.md address these gaps. Approach: rewrite page主体结构 (not extend sections DSL), reuse existing components (ScopedGraph, LearningMap), add accessible tab system.

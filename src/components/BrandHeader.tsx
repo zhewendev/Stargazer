@@ -10,17 +10,17 @@ import { resolveRelative, FullSlug } from "../../quartz/util/path"
 import { getNavItems } from "../lib/navigation"
 
 const BrandHeader: QuartzComponent = ({ cfg, fileData }: QuartzComponentProps) => {
-  const brand = (cfg as any).brand ?? {}
-  const brandName = brand.name ?? cfg.pageTitle
-  const tagline = brand.tagline ?? "Digital Garden"
-  const logo = brand.logo ?? "✦"
+  const brand = (cfg as Record<string, unknown>)?.brand as Record<string, string> | undefined ?? {}
+  const brandName = brand?.name ?? cfg.pageTitle
+  const tagline = brand?.tagline ?? "Digital Garden"
+  const logo = brand?.logo ?? "✦"
   const homeHref = resolveRelative(fileData.slug as FullSlug, "index" as FullSlug)
 
   // Compute base path prefix from cfg.baseUrl for GitHub Pages (e.g. "/Stargazer")
   const basePath: string = (() => {
     try {
-      if (!(cfg as any).baseUrl) return ""
-      const url = new URL(`https://${(cfg as any).baseUrl}`)
+      if (!cfg.baseUrl) return ""
+      const url = new URL(`https://${cfg.baseUrl}`)
       return url.pathname.replace(/\/$/, "")
     } catch { return "" }
   })()
