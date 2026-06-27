@@ -24,6 +24,13 @@ const MetadataPanel: QuartzComponent = ({ cfg, fileData, allFiles }: QuartzCompo
   const modified = fileData.dates?.modified
   const locale = cfg.locale ?? "zh-CN"
 
+  const basePath: string = (() => {
+    try {
+      if (!cfg.baseUrl) return ""
+      return new URL(`https://${cfg.baseUrl}`).pathname.replace(/\/$/, "")
+    } catch { return "" }
+  })()
+
   // Compute owning hub/topic from file position
   const owningHub = getOwningHub(fileData, allFiles)
   const topicLabel = owningHub?.split("/").pop() ?? owningHub
@@ -62,7 +69,7 @@ const MetadataPanel: QuartzComponent = ({ cfg, fileData, allFiles }: QuartzCompo
           <span class="metadata-panel-label">Tags</span>
           <div class="metadata-panel-tags">
             {tags.map((tag) => (
-              <a key={tag} class="metadata-panel-tag" href={`/tags/${tag}`}>
+              <a key={tag} class="metadata-panel-tag" href={basePath + `/tags/${tag}`}>
                 #{tag}
               </a>
             ))}

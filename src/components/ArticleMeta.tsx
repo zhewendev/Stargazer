@@ -35,6 +35,13 @@ const ArticleMeta: QuartzComponent = ({ cfg, fileData }: QuartzComponentProps) =
   const locale = cfg.locale ?? "zh-CN"
   const minutes = estimateReadingMinutes(fileData.text)
 
+  const basePath: string = (() => {
+    try {
+      if (!cfg.baseUrl) return ""
+      return new URL(`https://${cfg.baseUrl}`).pathname.replace(/\/$/, "")
+    } catch { return "" }
+  })()
+
   return (
     <div class="article-meta">
       <div class="article-meta-row">
@@ -49,7 +56,7 @@ const ArticleMeta: QuartzComponent = ({ cfg, fileData }: QuartzComponentProps) =
       {tags.length > 0 && (
         <div class="article-meta-tags">
           {tags.map((tag) => (
-            <a key={tag} class="article-meta-tag" href={`/tags/${tag}`}>
+            <a key={tag} class="article-meta-tag" href={basePath + `/tags/${tag}`}>
               #{tag}
             </a>
           ))}

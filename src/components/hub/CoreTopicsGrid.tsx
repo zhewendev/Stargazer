@@ -3,6 +3,7 @@
 // Renders child pages that have `type: topic` as cards with icon + title + note count.
 
 import type { QuartzPluginData } from "../../../quartz/plugins/vfile"
+import { resolveRelative, FullSlug } from "../../../quartz/util/path"
 
 interface CoreTopicsGridProps {
   hubSlug: string
@@ -36,7 +37,7 @@ export function CoreTopicsGrid({ hubSlug, allFiles }: CoreTopicsGridProps) {
         ).length
 
         return (
-          <a key={topic.slug} class="core-topic-card" href={"/" + topic.slug}>
+          <a key={topic.slug} class="core-topic-card" href={resolveRelative(hubSlug as FullSlug, topic.slug as FullSlug)}>
             <span class="core-topic-icon" aria-hidden="true">{icon}</span>
             <h3 class="core-topic-title">{title}</h3>
             {description && <p class="core-topic-desc">{description}</p>}

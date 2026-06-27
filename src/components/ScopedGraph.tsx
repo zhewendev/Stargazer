@@ -78,7 +78,7 @@ function ScopedGraphComponent({
     <div class="hub-section">
       <h3 class="hub-section-title">
         {spec.title}
-        <a class="hub-graph-full-link" href="/graph">完整图谱 →</a>
+        <a class="hub-graph-full-link" data-href="/graph">完整图谱 →</a>
       </h3>
       <div
         class="scoped-graph-container"
@@ -111,6 +111,15 @@ const scopedGraphScript = `
       s.onload = resolve; s.onerror = reject;
       document.head.appendChild(s);
     });
+  }
+
+  function resolveDataHrefs() {
+    var bp = (document.body.dataset.basepath || "").replace(/\/$/, "");
+    var links = document.querySelectorAll("[data-href]");
+    for (var i = 0; i < links.length; i++) {
+      var el = links[i];
+      el.setAttribute("href", bp + el.getAttribute("data-href"));
+    }
   }
 
   function initScopedGraphs() {
@@ -241,7 +250,10 @@ const scopedGraphScript = `
           gfx.on("pointerleave", function() {
             hoveredId = null; lb.alpha = 0; clrHi(); draw();
           });
-          gfx.on("click", function() { window.location.href = "/" + n.id; });
+          gfx.on("click", function() {
+            var bp = (document.body.dataset.basepath || "").replace(/\/$/, "");
+            window.location.href = bp + "/" + n.id;
+          });
         })(nd, g, lbl);
         nodeC.addChild(g);
         nData.push({ sim: nd, gfx: g, label: lbl, active: false });
@@ -312,12 +324,14 @@ const scopedGraphScript = `
   // Init on load
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", function() {
+      resolveDataHrefs();
       Promise.all([
         loadScript("https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"),
         loadScript("https://cdn.jsdelivr.net/npm/pixi.js@8/dist/pixi.js"),
       ]).then(initScopedGraphs);
     });
   } else {
+    resolveDataHrefs();
     Promise.all([
       loadScript("https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"),
       loadScript("https://cdn.jsdelivr.net/npm/pixi.js@8/dist/pixi.js"),
@@ -325,6 +339,7 @@ const scopedGraphScript = `
   }
 
   document.addEventListener("nav", function() {
+    resolveDataHrefs();
     Promise.all([
       loadScript("https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"),
       loadScript("https://cdn.jsdelivr.net/npm/pixi.js@8/dist/pixi.js"),

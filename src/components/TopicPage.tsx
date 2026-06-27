@@ -165,7 +165,7 @@ const TopicPage: QuartzComponent = ({ fileData, allFiles }: {
                   const topicDesc = (topicFm.description as string) ?? ""
                   const icon = (topicFm.icon as string | undefined) ?? "📄"
                   return (
-                    <a key={topic.slug} class="core-topic-card" href={"/" + topic.slug}>
+                    <a key={topic.slug} class="core-topic-card" href={resolveRelative(fileData.slug as FullSlug, topic.slug as FullSlug)}>
                       <span class="core-topic-icon" aria-hidden="true">{icon}</span>
                       <h3 class="core-topic-title">{topicTitle}</h3>
                       {topicDesc && <p class="core-topic-desc">{topicDesc}</p>}

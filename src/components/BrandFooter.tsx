@@ -38,7 +38,12 @@ function resolveSocials(cfg: GlobalConfiguration): SocialLink[] {
 }
 
 function isExternal(href: string): boolean {
-  return href.startsWith("http://") || href.startsWith("https://")
+  return href.startsWith("http://") || href.startsWith("https://") || href.startsWith("mailto:")
+}
+
+function resolveInternal(href: string, basePath: string): string {
+  if (isExternal(href) || href === "#") return href
+  return basePath + href
 }
 
 const GARDEN_LINKS = [
@@ -109,7 +114,7 @@ const BrandFooter: QuartzComponent = ({ cfg }: QuartzComponentProps) => {
               <li key={s.key}>
                 <a
                   class="brand-footer-link"
-                  href={s.href}
+                  href={resolveInternal(s.href, basePath)}
                   aria-label={s.label}
                   rel={
                     s.key === "rss"
@@ -138,7 +143,7 @@ const BrandFooter: QuartzComponent = ({ cfg }: QuartzComponentProps) => {
               <li key={link.label}>
                 <a
                   class="brand-footer-link"
-                  href={link.href}
+                  href={resolveInternal(link.href, basePath)}
                   rel={isExternal(link.href) ? "noopener noreferrer" : undefined}
                   target={isExternal(link.href) ? "_blank" : undefined}
                 >
